@@ -22,7 +22,7 @@ async function fetchWeddingArchives() {
             throw new Error('No token');
         }
         console.log('Fetching with token:', token.substring(0, 10) + '...');
-        const response = await fetch('/api/archives', {
+        const response = await fetch('/api/weddings', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         console.log('API response:', { status: response.status, ok: response.ok });
@@ -33,26 +33,48 @@ async function fetchWeddingArchives() {
             if (response.status === 401) setTimeout(() => { window.location.href = 'login.html'; }, 2000);
             throw new Error(errorData.error || `HTTP ${response.status}`);
         }
-        const archives = await response.json();
-        console.log('Fetched archives:', archives);
-        if (!Array.isArray(archives)) {
-            console.error('Invalid data:', archives);
+        const weddings = await response.json();
+        console.log('Fetched weddings raw:', JSON.stringify(weddings, null, 2));
+        if (!Array.isArray(weddings)) {
+            console.error('Invalid data:', weddings);
             errorEl.textContent = 'Error: Invalid server data.';
             throw new Error('Invalid data');
         }
 
-        // Filter only wedding records
-        const weddingRecords = archives.filter(r => r.record_type === 'wedding');
-        console.log('Wedding records:', weddingRecords.length);
+        weddingList.innerHTML = weddings
+            .map(w => {
+                const groomComponents = [w.groom_first_name, w.groom_middle_name, w.groom_surname]
+                    .map(c => c && typeof c === 'string' && c.trim() ? c.trim() : null)
+                    .filter(Boolean);
+                const brideComponents = [w.bride_first_name, w.bride_middle_name, w.bride_surname]
+                    .map(c => c && typeof c === 'string' && c.trim() ? c.trim() : null)
+                    .filter(Boolean);
+                const groomName = groomComponents.length ? groomComponents.join(' ') : 'Unknown';
+                const brideName = brideComponents.length ? brideComponents.join(' ') : 'Unknown';
+                const weddingDate = w.wedding_date && typeof w.wedding_date === 'string' ? w.wedding_date : null;
+                const pastor = w.pastor && typeof w.pastor === 'string' ? w.pastor.trim() : 'Unknown';
+                const location = w.location && typeof w.location === 'string' ? w.location.trim() : 'Unknown';
 
-        weddingList.innerHTML = weddingRecords
-            .map(r => `<tr data-id="${r.id}">
-                <td class="border p-2">${r.details?.groom_name || 'Unknown'}</td>
-                <td class="border p-2">${r.details?.bride_name || 'Unknown'}</td>
-                <td class="border p-2">${r.details?.wedding_date ? new Date(r.details.wedding_date).toLocaleDateString() : 'N/A'}</td>
-                <td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${JSON.stringify(r).replace(/'/g, "\\'")}' data-open="false">Details</button></td>
-            </tr>`)
-            .join('') || '<tr><td colspan="4" class="border p-2 text-center">No archived weddings found</td></tr>';
+                const recordData = {
+                    groom_name: groomName,
+                    bride_name: brideName,
+                    groom_id_number: w.groom_id_number || 'N/A',
+                    bride_id_number: w.bride_id_number || 'N/A',
+                    wedding_date: weddingDate,
+                    pastor: pastor,
+                    location: location
+                };
+                const recordStr = btoa(JSON.stringify(recordData));
+                console.log('Generated record string (base64):', recordStr);
+                return `<tr data-id="${w.id || 'unknown'}">
+                    <td class="border p-2">${groomName}</td>
+                    <td class="border p-2">${brideName}</td>
+                    <td class="border p-2">${weddingDate ? new Date(weddingDate).toLocaleDateString() : 'N/A'}</td>
+                    <td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${recordStr}' data-open="false">Details</button></td>
+                </tr>`;
+            })
+            .filter(row => row)
+            .join('') || '<tr><td colspan="4" class="border p-2 text-center">No recorded weddings found</td></tr>';
 
         document.querySelectorAll('.detailsBtn').forEach(btn => btn.addEventListener('click', () => toggleDetails(btn)));
     } catch (err) {
@@ -67,7 +89,9 @@ function toggleDetails(btn) {
     const isOpen = btn.dataset.open === 'true';
     let record;
     try {
-        record = JSON.parse(btn.dataset.record);
+        const encoded = btn.dataset.record;
+        const decoded = JSON.parse(atob(encoded));
+        record = decoded;
         console.log('Parsed record:', record);
     } catch (e) {
         console.error('Invalid JSON in data-record:', btn.dataset.record, e);
@@ -75,7 +99,7 @@ function toggleDetails(btn) {
         return;
     }
     const parentRow = btn.closest('tr');
-    const detailsRow = document.querySelector(`tr[data-details-id="${record.id}"]`);
+    const detailsRow = document.querySelector(`tr[data-details-id="${parentRow.dataset.id}"]`);
     if (isOpen) {
         if (detailsRow) detailsRow.remove();
         btn.dataset.open = 'false';
@@ -83,28 +107,21 @@ function toggleDetails(btn) {
     } else {
         if (detailsRow) detailsRow.remove();
         const newRow = document.createElement('tr');
-        newRow.dataset.detailsId = record.id;
-        let detailsHtml = '<td colspan="4" class="border p-2"><table class="w-full border-collapse">';
-        if (record.record_type === 'wedding') {
-            detailsHtml += `
-                <tr><td class="border p-2 font-semibold">Wedding ID</td><td class="border p-2">${record.details?.wedding_id || 'N/A'}</td></tr>
-                <tr><td class="border p-2 font-semibold">Groom</td><td class="border p-2">${record.details?.groom_name || 'Unknown'}</td></tr>
-                <tr><td class="border p-2 font-semibold">Bride</td><td class="border p-2">${record.details?.bride_name || 'Unknown'}</td></tr>
-                <tr><td class="border p-2 font-semibold">Wedding Date</td><td class="border p-2">${record.details?.wedding_date ? new Date(record.details.wedding_date).toLocaleDateString() : 'N/A'}</td></tr>
-                <tr><td class="border p-2 font-semibold">Pastor</td><td class="border p-2">${record.details?.pastor || 'Unknown'}</td></tr>
-                <tr><td class="border p-2 font-semibold">Location</td><td class="border p-2">${record.details?.location || 'Unknown'}</td></tr>
-                ${Object.entries(record.details || {})
-                    .filter(([key]) => !['wedding_id', 'groom_name', 'bride_name', 'wedding_date', 'pastor', 'location'].includes(key))
-                    .map(([key, value]) => {
-                        if (Array.isArray(value) && (!value.length || value.every(item => !Object.keys(item).length))) return `<tr><td class="border p-2 font-semibold">${key}</td><td class="border p-2">No ${key} recorded</td></tr>`;
-                        return `<tr><td class="border p-2 font-semibold">${key}</td><td class="border p-2">${value || 'N/A'}</td></tr>`;
-                    })
-                    .join('')}
-            `;
-        }
-        detailsHtml += '</table></td>';
+        newRow.dataset.detailsId = parentRow.dataset.id || 'unknown';
+        const detailsHtml = `
+            <td colspan="4" class="border p-2">
+                <table class="w-full border-collapse">
+                    <tr><td class="border p-2 font-semibold">Groom</td><td class="border p-2">${record.groom_name || 'Unknown'}</td></tr>
+                    <tr><td class="border p-2 font-semibold">Bride</td><td class="border p-2">${record.bride_name || 'Unknown'}</td></tr>
+                    <tr><td class="border p-2 font-semibold">Groom ID Number</td><td class="border p-2">${record.groom_id_number || 'N/A'}</td></tr>
+                    <tr><td class="border p-2 font-semibold">Bride ID Number</td><td class="border p-2">${record.bride_id_number || 'N/A'}</td></tr>
+                    <tr><td class="border p-2 font-semibold">Wedding Date</td><td class="border p-2">${record.wedding_date ? new Date(record.wedding_date).toLocaleDateString() : 'N/A'}</td></tr>
+                    <tr><td class="border p-2 font-semibold">Pastor</td><td class="border p-2">${record.pastor || 'Unknown'}</td></tr>
+                    <tr><td class="border p-2 font-semibold">Location</td><td class="border p-2">${record.location || 'Unknown'}</td></tr>
+                </table>
+            </td>`;
         newRow.innerHTML = detailsHtml;
-        parentRow.insertAdjacentElement('afterend', newRow);
+        parentRow.parentNode.insertBefore(newRow, parentRow.nextSibling);
         btn.dataset.open = 'true';
         btn.textContent = 'Hide Details';
     }
@@ -125,24 +142,34 @@ async function recordWedding(event) {
     }
 
     const formData = new FormData(form);
+    console.log('Form Data:', Object.fromEntries(formData)); // Debug log
     const weddingData = {
         groom_first_name: formData.get('groomLebitso')?.trim(),
         groom_middle_name: formData.get('groomLaKereke')?.trim() || null,
         groom_surname: formData.get('groomFane')?.trim(),
+        groom_id_number: formData.get('groomIdNumber')?.trim() || null,
         bride_first_name: formData.get('brideLebitso')?.trim(),
         bride_middle_name: formData.get('brideLaKereke')?.trim() || null,
         bride_surname: formData.get('brideFane')?.trim(),
+        bride_id_number: formData.get('brideIdNumber')?.trim() || null,
         wedding_date: formData.get('weddingDate')?.trim(),
         pastor: formData.get('moruti')?.trim(),
         location: formData.get('location')?.trim()
     };
 
-    // Validate required fields
-    if (!weddingData.groom_first_name || !weddingData.groom_surname ||
-        !weddingData.bride_first_name || !weddingData.bride_surname ||
-        !weddingData.wedding_date || !weddingData.pastor || !weddingData.location) {
+    // Detailed validation
+    const missingFields = [];
+    if (!weddingData.groom_first_name) missingFields.push('Groom Lebitso');
+    if (!weddingData.groom_surname) missingFields.push('Groom Fane');
+    if (!weddingData.bride_first_name) missingFields.push('Bride Lebitso');
+    if (!weddingData.bride_surname) missingFields.push('Bride Fane');
+    if (!weddingData.wedding_date) missingFields.push('Wedding Date');
+    if (!weddingData.pastor) missingFields.push('Moruti');
+    if (!weddingData.location) missingFields.push('Location');
+
+    if (missingFields.length > 0) {
         console.error('Missing required fields:', weddingData);
-        errorEl.textContent = 'Error: All required fields must be filled.';
+        errorEl.textContent = `Error: The following required fields must be filled: ${missingFields.join(', ')}.`;
         return;
     }
 
@@ -175,7 +202,7 @@ async function recordWedding(event) {
 
         errorEl.textContent = 'Wedding recorded successfully';
         form.reset();
-        await fetchWeddingArchives(); // Refresh the wedding list
+        await fetchWeddingArchives();
         setTimeout(() => { errorEl.textContent = ''; }, 3000);
     } catch (err) {
         console.error('Record wedding error:', err);
@@ -190,6 +217,7 @@ function logout() {
     window.location.href = 'login.html';
 }
 
+// Toggles the visibility of the sidebar
 function toggleSidebar() {
     console.log('Toggling sidebar at:', new Date().toISOString());
     const sidebar = document.getElementById('sidebar');
