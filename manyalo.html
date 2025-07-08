@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LECSA Menu</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="flex">
+        <div id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-blue-800 text-white transform -translate-x-full transition-transform duration-300 ease-in-out">
+            <div class="p-4">
+                <h2 class="text-xl font-bold">LECSA Menu</h2>
+                <ul class="mt-4 space-y-2">
+                    <li><a href="announcements.html" class="block p-2 hover:bg-blue-700 rounded">Announcements</a></li>
+                    <li><a href="events.html" class="block p-2 hover:bg-blue-700 rounded">Events</a></li>
+                    <li><a href="regsys.html" class="block p-2 hover:bg-blue-700 rounded">Back to Dashboard</a></li>
+                    <li><a href="archives.html" class="block p-2 hover:bg-blue-700 rounded">Archives</a></li>
+                    <li id="adminLink" class="hidden"><a href="admin.html" class="block p-2 hover:bg-blue-700 rounded">Admin</a></li>
+                    <li><a id="logoutLink" href="#" class="block p-2 hover:bg-blue-700 rounded">Logout</a></li>
+                </ul>
+            </div>
+        </div>
+        <div id="content" class="flex-1 p-6 transition-all duration-300">
+            <button id="toggleSidebar" class="text-2xl mb-4">☰</button>
+            <h1 class="text-2xl font-bold mb-4">Manyalo (Weddings)</h1>
+            <div id="error" class="text-red-500 mb-4"></div>
+            <div class="mb-6">
+                <h2 class="text-xl font-semibold mb-2">Record Wedding</h2>
+                <form id="weddingForm" class="grid grid-cols-1 gap-4 max-w-lg">
+                    <div>
+                        <label for="groom_first_name" class="block">Groom Lebitso:</label>
+                        <input type="text" id="groom_first_name" name="groom_first_name" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="groom_middle_name" class="block">Groom La Kereke (Optional):</label>
+                        <input type="text" id="groom_middle_name" name="groom_middle_name" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="groom_surname" class="block">Groom Fane:</label>
+                        <input type="text" id="groom_surname" name="groom_surname" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="bride_first_name" class="block">Bride Lebitso:</label>
+                        <input type="text" id="bride_first_name" name="bride_first_name" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="bride_middle_name" class="block">Bride La Kereke (Optional):</label>
+                        <input type="text" id="bride_middle_name" name="bride_middle_name" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="bride_surname" class="block">Bride Fane:</label>
+                        <input type="text" id="bride_surname" name="bride_surname" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="wedding_date" class="block">Wedding Date:</label>
+                        <input type="date" id="wedding_date" name="wedding_date" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="pastor" class="block">Moruti:</label>
+                        <input type="text" id="pastor" name="pastor" class="w-full p-2 border rounded">
+                    </div>
+                    <div>
+                        <label for="location" class="block">Location:</label>
+                        <input type="text" id="location" name="location" class="w-full p-2 border rounded">
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Record</button>
+                </form>
+            </div>
+            <div>
+                <h2 class="text-xl font-semibold mb-2">Wedding Records</h2>
+                <input type="text" id="search" placeholder="Search weddings..." class="w-full p-2 border rounded mb-4">
+                <table class="w-full border-collapse">
+                    <thead>
+                        <tr class="bg-gray-200">
+                            <th class="border p-2">Groom</th>
+                            <th class="border p-2">Bride</th>
+                            <th class="border p-2">Date</th>
+                            <th class="border p-2">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="weddingList"></tbody>
+                </table>
+            </div>
+            <div id="detailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
+                <div class="bg-white p-6 rounded shadow-lg max-w-lg w-full">
+                    <h2 class="text-xl font-semibold mb-4">Wedding Details</h2>
+                    <table class="w-full border-collapse">
+                        <tbody id="detailsTable"></tbody>
+                    </table>
+                    <button id="closeModal" class="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="manyalo.js"></script>
+</body>
+</html>

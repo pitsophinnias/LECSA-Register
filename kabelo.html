@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LECSA Church - Kabelo Register</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="sidebar">
+        <h2>LECSA Menu</h2>
+        <nav>
+            <ul>
+                <li><a href="index.html">Announcements</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="regsys.html">Back to Dashboard</a></li>
+                <li><a href="archives.html">Archives</a></li>
+                <li><a href="admin.html" id="adminLink" style="display: none;">Admin</a></li>
+                <li><a href="#" id="logoutLink">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div id="content">
+        <button id="toggleSidebar">☰</button>
+        <div class="container">
+            <h1>Kabelo Register</h1>
+            <div class="search-container">
+                <input type="text" id="search" placeholder="Search members...">
+            </div>
+            <h2>Register New Member</h2>
+            <form id="memberForm">
+                <div>
+                    <label for="lebitso">Lebitso:</label>
+                    <input type="text" id="lebitso" name="lebitso" required>
+                </div>
+                <div>
+                    <label for="fane">Fane:</label>
+                    <input type="text" id="fane" name="fane" required>
+                </div>
+                <button type="submit" class="action-button">Register</button>
+                <p id="error" class="error"></p>
+            </form>
+            <h2>Current Members</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Palo</th>
+                        <th>Lebitso</th>
+                        <th>Fane</th>
+                        <th>2024</th>
+                        <th>2025</th>
+                        <th>2026</th>
+                        <th>2027</th>
+                        <th>2028</th>
+                        <th>2029</th>
+                        <th>2030</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="memberList"></tbody>
+            </table>
+        </div>
+    </div>
+    <script src="kabelo.js"></script>
+</body>
+</html>

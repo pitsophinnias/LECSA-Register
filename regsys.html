@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LECSA Church - Registration System</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="sidebar">
+        <h2>LECSA Menu</h2>
+        <nav>
+            <ul>
+                <li><a href="index.html">Announcements</a></li>
+                <li><a href="events.html">Events</a></li>
+                <li><a href="archives.html">Archives</a></li>
+                <li><a href="admin.html" id="adminLink" style="display: none;">Admin</a></li>
+                <li><a href="#" id="logoutLink">Logout</a></li>
+            </ul>
+        </nav>
+    </div>
+    <div id="content">
+        <button id="toggleSidebar">☰</button>
+        <div class="container">
+            <h1>LECSA Registration System</h1>
+            <h2>Recent Activities</h2>
+            <div class="bg-white p-4 shadow">
+                <h3>Newest Member</h3>
+                <p id="recentMember">Loading...</p>
+                <h3>Recent Baptism</h3>
+                <p id="recentBaptism">Loading...</p>
+                <h3>Recent Wedding</h3>
+                <p id="recentWedding">Loading...</p>
+            </div>
+            <h2>Management Options</h2>
+            <div class="bg-white p-4 shadow">
+                <h3><a href="kabelo.html">Kabelo Register</a></h3>
+                <p>Manage church member registrations</p>
+                <h3><a href="likolobetso.html">Likolobetso</a></h3>
+                <p>Record baptism details</p>
+                <h3><a href="manyalo.html">Manyalo</a></h3>
+                <p>Record wedding details</p>
+				<h3><a href="archives.html">Archives</a></h3>
+				<p>View archived records</p>
+            </div>
+			
+        </div>
+    </div>
+    <script src="regsys.js"></script>
+</body>
+</html>
