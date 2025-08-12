@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LECSA Financials</title>
+	<style>
+	table { width: 100%; border-collapse: collapse;}
+	th, td {border: 1px solid #ccc; padding: 8px; text-align: left; }
+	</style>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	
+</head>
+<body>
+    <div class="header-wrapper">
+        <div class="side-menu" id="sidebar">
+            <div class="menu-logo">
+                <img src="images/logo.png" alt="LECSA Logo">
+                <span>LECSA Menu</span>
+            </div>
+            <a href="regsys.html"><i class="fas fa-home"></i><span>Kabelo Register</span></a>
+            <a href="likolobetso.html"><i class="fas fa-cross"></i><span>Likolobetso</span></a>
+            <a href="manyalo.html"><i class="fas fa-ring"></i><span>Manyalo</span></a>
+            <a href="financials.html" class="active"><i class="fas fa-money-bill"></i><span>Financials</span></a>
+            <a href="archives.html"><i class="fas fa-archive"></i><span>Archives</span></a>
+            <a href="admin.html" id="adminLink" style="display: none;"><i class="fas fa-user-shield"></i><span>Admin</span></a>
+            <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+            <div class="menu-close" id="menuClose"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="menu-toggle" id="toggleSidebar"><i class="fas fa-bars"></i></div>
+        <div class="financials-section" id="content">
+            <h2>Financial Records</h2>
+            <div class="financial-input">
+                <h3>Add Weekly Transaction</h3>
+                <form id="financialForm">
+                    <div>
+                        <label for="transactionDate">Date</label>
+                        <input type="date" id="transactionDate" required>
+                    </div>
+                    <div>
+                        <label for="description">Description</label>
+                        <input type="text" id="description" placeholder="e.g., Offering Collection" required>
+                    </div>
+                    <div>
+                        <label for="category">Category</label>
+                        <select id="category" required>
+                            <option value="Income">Income</option>
+                            <option value="Expense">Expense</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="amount">Amount (LSL)</label>
+                        <input type="number" id="amount" step="0.01" min="0" required>
+                    </div>
+                    <button type="submit">Add Transaction</button>
+                </form>
+            </div>
+            <div class="financial-reports">
+                <h3>Financial Reports</h3>
+                <div class="report-tabs">
+                    <button class="tab-button active" data-tab="weekly">Weekly</button>
+                    <button class="tab-button" data-tab="monthly">Monthly</button>
+                    <button class="tab-button" data-tab="quarterly">Quarterly</button>
+                    <button class="tab-button" data-tab="yearly">Yearly</button>
+                </div>
+                <div id="weeklyReport" class="report-content active">
+                    <h4>Weekly Transactions</h4>
+                    <table id="weeklyTable">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Description</th>
+                                <th>Category</th>
+                                <th>Amount (LSL)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="monthlyReport" class="report-content">
+                    <h4>Monthly Ledger</h4>
+                    <table id="monthlyTable">
+                        <thead>
+                            <tr>
+                                <th>Month</th>
+                                <th>Income (LSL)</th>
+                                <th>Expenses (LSL)</th>
+                                <th>Balance (LSL)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="quarterlyReport" class="report-content">
+                    <h4>Quarterly Balance Sheet</h4>
+                    <table id="quarterlyTable">
+                        <thead>
+                            <tr>
+                                <th>Quarter</th>
+                                <th>Income (LSL)</th>
+                                <th>Expenses (LSL)</th>
+                                <th>Balance (LSL)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+                <div id="yearlyReport" class="report-content">
+                    <h4>Yearly Financial Statement</h4>
+                    <table id="yearlyTable">
+                        <thead>
+                            <tr>
+                                <th>Year</th>
+                                <th>Income (LSL)</th>
+                                <th>Expenses (LSL)</th>
+                                <th>Balance (LSL)</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="financials.js"></script>
+    <script src="regsys.js"></script>
+</body>
+</html>

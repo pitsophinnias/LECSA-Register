@@ -1,203 +1,827 @@
-/* General styles */
-
-
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAA...'), linear-gradient(rgba(245, 243, 232, 0.9), rgba(245, 243, 232, 0.9)); /* LECSA emblem as base64, with beige overlay */
-    background-repeat: no-repeat, no-repeat;
-    background-position: center 20px, center;
-    background-size: 200px auto, cover;
+/* General Styles */
+*{
+	margin: 0;
+	padding: 0;
+	font-family: 'Poppins', sans-serif;
+}
+/* Head Wrapper */
+.header-wrapper {
     position: relative;
-    overflow-x: hidden;
-}
-
-.bg-gray-100 { background-color: #f3f4f6; }
-.font-sans { font-family: sans-serif; }
-.text-red-500 { color: #ef4444; }
-.text-2xl { font-size: 1.5rem; }
-.font-bold { font-weight: 700; }
-.mb-4 { margin-bottom: 1rem; }
-.w-full { width: 100%; }
-.p-2 { padding: 0.5rem; }
-.border { border: 1px solid #ddd; }
-.rounded { border-radius: 0.25rem; }
-.bg-gray-200 { background-color: #e5e7eb; }
-.font-semibold { font-weight: 600; }
-.mb-6 { margin-bottom: 1.5rem; }
-
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 20px;
-    position: relative;
-    z-index: 1;
-}
-
-h1, h2, h3 {
-    color: #3c2f2f; /* Dark brown for headings */
-    font-family: 'Merriweather', serif; /* Serif for traditional, reverent feel */
-}
-
-a {
-    color: #004aad; /* Deep blue from Lesotho flag */
-    text-decoration: none;
-}
-
-a:hover {
-    color: #d4a017; /* Gold for hover, reflecting royalty */
-    text-decoration: underline;
-}
-
-button {
-    background-color: #004aad; /* Deep blue for buttons */
-    color: #f5f3e8; /* Beige text for contrast */
-    border: none;
-    padding: 10px 20px;
-    cursor: pointer;
-    border-radius: 4px; /* Rounded corners like Exceed-DigiPharm */
-}
-
-button:hover {
-    background-color: #007b3d; /* Green for hover, from Lesotho flag */
-}
-
-@keyframes float {
-    0% { transform: translate(-50%, -50%) rotate(0deg); }
-    100% { transform: translate(-50%, -50%) rotate(5deg); }
-}
-
-table {
     width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
+    min-height: 100vh;
+    background-image: linear-gradient(rgba(4,9,30,0.7), rgba(4,9,30,0.7)), url(images/banner.jpg);
+    background-position: center;
+    background-size: cover;
+    transition: margin-left 0.3s ease;
+}
+.header-wrapper.menu-active {
+    margin-left: 250px;
+    width: calc(100% - 250px);
+}
+.header{
+	min-height: 100vh;
+	width:100% ;
+	height: 100%;
+	background-image: linear-gradient(rgba(4,9,30,0.7),rgba(4,9,30,0.7)), url(images/banner.jpg);  
+	background-position: center;
+	background-size: cover;
+	position: relative;
+	margin-left: 0;
+	transition: margin-left 0.3s ease;
+}
+.side-menu.active ~ .header{
+	margin-left: 250px;
+	width: calc(100% -250px);
 }
 
-th, td {
-    border: 1px solid #3c2f2f; /* Dark brown borders */
-    padding: 8px;
-    text-align: left;
+/* Navigation Style */
+nav{
+	display: flex;
+	padding: 2% 6%;
+	justify-content: space-between;
+	align-items: center;
+}
+nav img{
+	width: 150px;
+}
+.nav-links{
+	flex: 1;
+	text-align: right;
+}
+.nav-links ul li{
+	link-style: none;
+	display: inline-block;
+	padding: 8px 12px;
+	position: relative
+}
+.nav-links ul li a{
+	color: #c19a6b;   /* Camel */
+	text-decoration: none;
+	font-size: 13px;
+}
+.nav-links ul li::after{
+	content: '';
+	width: 0%;
+	height: 2px;
+	background: #fff;
+	display: block;
+	margin: auto;
+	transition: 0.5s;
+}
+.nav-links ul li:hover::after{
+	width: 100%;
 }
 
-th {
-    background-color: #007b3d; /* Green for table headers */
-    color: #f5f3e8; /* Beige text for contrast */
+nav .fa{
+	display: none;
 }
 
-td input {
-    border: 1px solid #3c2f2f; /* Dark brown border */
-    background-color: #f5f3e8; /* Beige background */
-    color: #3c2f2f; /* Dark brown text */
-    padding: 4px;
-    width: 100%;
+/* Body Styles */
+.text-box{
+	width: 90%;
+	color: #c19a6b;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	text-align: center:
+}
+.text-box h1{
+	font-size: 62px;
+}
+.text-box p{
+	margin: 10px 0 40px;
+	font-size: 14px;
+	color: #c19a6b;
 }
 
-.action-button {
-    background-color: #004aad; /* Deep blue for action buttons */
-    color: #f5f3e8; /* Beige text */
-    padding: 6px 12px;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    margin-right: 5px;
+/* Hero Styles */
+.hero-btn{
+	display: inline-block;
+	text-decoration: none;
+	color: #fff;
+	border: 1px solid #fff;
+	padding: 12px 34px;
+	font-size: 13px;
+	background: transparent;
+	position: relative;
+	cursor: pointer;
+}
+.hero-btn:hover{
+	border: 1px solid #c19a6b;
+	background: #c19a6b;
+	transition: 1s;
 }
 
-.action-button:hover {
-    background-color: #d4a017; /* Gold for hover */
+/* Responsive Styles */
+@media(max-width: 700px){
+	.text-box h1{
+	font-size: 20px;
+	}
+	.nav-links ul li{
+		display: block;
+	}
+	.nav-links{
+		position: absolute;
+		background: #f44336;
+		height:100vh;
+		width: 200px;
+		top: 0;
+		right: -200px;
+		text-align: left;
+		z-index: 2;
+		transition: 1s;
+	}
+	nav .fa{
+		display: block;
+		color: #fff;
+		margin: 10px
+		font-size: 22px;
+		cursor: pointer;
+	}
+	.nav-links ul{
+		padding:30px
+	}
+
 }
 
-.done-button {
-    display: none;
-    margin-top: 5px;
+/* Announcement Styles */
+
+.announcements{
+	width: 80%;
+	margin: auto;
+	text-align: center;
+	padding-top: 100px;
+}
+h1{
+	font-size: 36px;
+	font-weight: 600;
+}
+p{
+	color: #777;
+	font-size: 14px;
+	font-weight: 300;
+	line-height: 22px;
+	padding: 10px;
+}
+.row{
+	margin-top: 5%;
+	display: flex;
+	justify-content: space-between;
+}
+.announcement-col{
+	flex-basis: 48%;
+	background: #fff3f3;
+	border-radius: 10px;
+	margin-bottom: 5%;
+	padding: 20px 12px;
+	box-sizing: border-box;
+	transition: 0.5s;
+}
+h3{
+	text-align: center;
+	font-weight: 600;
+	margin: 10px 0;
+}
+.announcement-col:hover{
+	box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);
+}
+@media(max-width: 700px){
+	.row{
+		flex-direction: column;
+	}
 }
 
-.search-container {
-    margin-bottom: 20px;
+/* Events */
+.events{
+	width: 80%;
+	margin: auto;
+	text-align: center;
+	padding-top: 50px;
+}
+.events-col{
+	flex-basis: 48%;
+	background: #fff3f3;
+	border-radius: 10px;
+	margin-bottom: 5%;
+	padding: 20px 12px;
+	box-sizing: border-box;
+	transition: 0.5s;
 }
 
-.search-container input {
-    width: 100%;
-    padding: 8px;
-    border: 1px solid #3c2f2f; /* Dark brown border */
-    background-color: #f5f3e8; /* Beige background */
-    color: #3c2f2f; /* Dark brown text */
-}
-
-.toggle-details {
-    cursor: pointer;
-}
-
-#sidebar {
-    width: 16rem;
-    background-color: #e6e1c9; /* Lighter beige for sidebar */
+/* Side Menu */
+.side-menu {
+    width: 0;
+    min-height: 100vh;
+    background: rgba(4,9,30,0.9);
+    color: white;
     position: fixed;
     top: 0;
     left: 0;
-    height: 100%;
-    transform: translateX(-100%);
-    transition: transform 0.3s ease-in-out;
-    z-index: 1000; /* Ensure sidebar is above content */
+    transition: width 0.3s ease;
+    overflow: hidden;
+    z-index: 90;
+    padding: 0;
 }
-
-#sidebar.open {
-    transform: translateX(0);
+.side-menu.active {
+    width: 250px;
+    padding: 20px 10px;
 }
-
-#content {
-    margin-left: 0;
-    transition: margin-left 0.3s ease-in-out;
-}
-
-#content.shift {
-    margin-left: 16rem;
-}
-
-.bg-blue-800 { background-color: #1e40af; }
-.text-white { color: white; }
-.hover\:bg-blue-700:hover { background-color: #1e3a8a; }
-.p-4 { padding: 1rem; }
-.text-xl { font-size: 1.25rem; }
-.mt-4 { margin-top: 1rem; }
-.space-y-2 > * + * { margin-top: 0.5rem; }
-.block { display: block; }
-
-.bg-white {
-    background-color: #f5f3e8; /* Beige instead of pure white */
-}
-
-.p-4 {
-    padding: 16px;
-}
-
-.shadow {
-    box-shadow: 0 2px 4px rgba(60, 47, 47, 0.1); /* Shadow tinted with dark brown */
-}
-
-.bg-gray-100 {
-    background-color: #e0e0e0; /* Light gray for details table headers */
-}
-
-@media (max-width: 768px) {
-    #sidebar {
-        width: 100%;
-        transform: translateX(-100%);
-    }
-    #sidebar.open {
-        transform: translateX(0);
-    }
-    #content.shift {
-        margin-left: 0;
-    }
-}
-
-.role-form {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.role-form label {
+.side-menu a {
     display: flex;
     align-items: center;
-    gap: 5px;
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    transition: background 0.3s;
+    white-space: nowrap;
+}
+.side-menu a.active {
+    background: #4CAF50;
+}
+.menu-logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+}
+.menu-logo img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 10px;
+}
+.side-menu:hover .menu-toggle {
+    display: none;
+}
+.side-menu a:hover {
+    background: #4CAF50;
+}
+.side-menu a i {
+    font-size: 20px;
+    margin-right: 10px;
+    width: 30px;
+    text-align: center;
+}
+.side-menu a span {
+    display: none;
+}
+.side-menu:hover a span {
+    display: inline;
+}
+	
+/* Menu Toggle Button */
+.menu-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    color: #c19a6b;
+    cursor: pointer;
+    z-index: 100;
+    background: rgba(4,9,30,0.7);
+    padding: 10px;
+    border-radius: 50%;
+}
+
+/* Menu Close Button */
+.menu-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 24px;
+    color: #c19a6b;
+    cursor: pointer;
+    display: none;
+}
+
+.side-menu.active .menu-close {
+    display: block;
+}
+
+/* Admin Page Styles */
+.admin-section {
+    width: 80%;
+    margin: auto;
+    padding-top: 50px;
+    color: #fff;
+}
+.admin-section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.admin-section table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.admin-section th,
+.admin-section td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.admin-section th {
+    background: #4CAF50;
+    color: #fff;
+}
+.admin-section tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+.admin-section input[type="text"],
+.admin-section input[type="checkbox"] {
+    padding: 8px;
+    margin: 5px 0;
+    border: 1px solid #c19a6b;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+.admin-section button {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.admin-section button:hover {
+    background: #c19a6b;
+}
+
+/* Registration System Page Styles */
+.regsys-section {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+    padding-top: 100px;
+}
+.recent-activities {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+    padding-top: 100px;
+}
+.management-options {
+    width: 80%;
+    margin: auto;
+    text-align: center;
+    padding-top: 50px;
+}
+.activity-col {
+    flex-basis: 48%;
+    background: #fff3f3;
+    border-radius: 10px;
+    margin-bottom: 5%;
+    padding: 20px 12px;
+    box-sizing: border-box;
+    transition: 0.5s;
+}
+.activity-col:hover {
+    box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);
+}
+.management-col {
+    flex-basis: 48%;
+    background: #fff3f3;
+    border-radius: 10px;
+    margin-bottom: 5%;
+    padding: 20px 12px;
+    box-sizing: border-box;
+    transition: 0.5s;
+}
+.management-col:hover {
+    box-shadow: 0 0 20px 0px rgba(0,0,0,0.2);
+}
+
+/* Login and Register Page Styles */
+.auth-section {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    text-align: center;
+}
+.auth-section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+.auth-section h3 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+.auth-section form {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    width: 90%;
+    margin: auto;
+}
+.auth-section form div {
+    margin-bottom: 15px;
+}
+.auth-section label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+.auth-section input[type="text"],
+.auth-section input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #c19a6b;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    box-sizing: border-box;
+}
+.auth-section button {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.auth-section button:hover {
+    background: #c19a6b;
+}
+.auth-section p#loginMessage {
+    color: #fff;
+    margin-top: 10px;
+    font-size: 14px;
+}
+.auth-section .register-link {
+    margin-top: 15px;
+    font-size: 14px;
+    color: #fff;
+}
+.auth-section .register-link a {
+    color: #c19a6b;
+    text-decoration: none;
+}
+.auth-section .register-link a:hover {
+    text-decoration: underline;
+}
+
+/* Manyalo (Weddings) Page Styles */
+.manyalo-section {
+    width: 80%;
+    margin: auto;
+    padding-top: 50px;
+    color: #fff;
+}
+.manyalo-section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.manyalo-section form {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.manyalo-section input[type="text"],
+.manyalo-section input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #c19a6b;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+.manyalo-section button {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.manyalo-section button:hover {
+    background: #c19a6b;
+}
+.manyalo-section table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.manyalo-section th,
+.manyalo-section td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.manyalo-section th {
+    background: #4CAF50;
+    color: #fff;
+}
+.manyalo-section tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Kabelo Page Styles */
+.kabelo-section {
+    width: 80%;
+    margin: auto;
+    padding-top: 50px;
+    color: #fff;
+}
+.kabelo-section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.kabelo-section form {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.kabelo-section input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #c19a6b;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+.kabelo-section button {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.kabelo-section button:hover {
+    background: #c19a6b;
+}
+.kabelo-section table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.kabelo-section th,
+.kabelo-section td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.kabelo-section th {
+    background: #4CAF50;
+    color: #fff;
+}
+.kabelo-section tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Likolobetso (Baptisms) Page Styles */
+.likolobetso-section {
+    width: 80%;
+    margin: auto;
+    padding-top: 50px;
+    color: #fff;
+}
+.likolobetso-section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.likolobetso-section form {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.likolobetso-section input[type="text"],
+.likolobetso-section input[type="date"] {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #c19a6b;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+.likolobetso-section button {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.likolobetso-section button:hover {
+    background: #c19a6b;
+}
+.likolobetso-section table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.likolobetso-section th,
+.likolobetso-section td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.likolobetso-section th {
+    background: #4CAF50;
+    color: #fff;
+}
+.likolobetso-section tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+
+/* Archives Page Styles */
+.archives-section {
+    width: 80%;
+    margin: auto;
+    padding-top: 50px;
+    color: #fff;
+}
+.archives-section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.archives-section .archive-box {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+.archives-section table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.archives-section th,
+.archives-section td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.archives-section th {
+    background: #4CAF50;
+    color: #fff;
+}
+.archives-section tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+.archives-section .modal {
+    background: rgba(4, 9, 30, 0.9);
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 20px;
+}
+.archives-section .modal button {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.archives-section .modal button:hover {
+    background: #c19a6b;
+}
+
+/* Financials Page Styles */
+.financials-section {
+    width: 80%;
+    margin: auto;
+    padding-top: 50px;
+    color: #fff;
+}
+.financials-section h2 {
+    font-size: 28px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    text-align: center;
+}
+.financials-section h3 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-bottom: 15px;
+}
+.financials-section form {
+    background: rgba(255, 255, 255, 0.1);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+.financials-section form div {
+    margin-bottom: 15px;
+}
+.financials-section label {
+    display: block;
+    text-align: left;
+    margin-bottom: 5px;
+    font-size: 14px;
+}
+.financials-section input[type="text"],
+.financials-section input[type="date"],
+.financials-section input[type="number"],
+.financials-section select {
+    width: 100%;
+    padding: 10px;
+    margin: 10px 0;
+    border: 1px solid #c19a6b;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+.financials-section button {
+    padding: 10px 20px;
+    background: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.financials-section button:hover {
+    background: #c19a6b;
+}
+.financials-section table {
+    width: 100%;
+    border-collapse: collapse;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+}
+.financials-section th,
+.financials-section td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+}
+.financials-section th {
+    background: #4CAF50;
+    color: #fff;
+}
+.financials-section tr:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
+.report-tabs {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+.tab-button {
+	cursor: pointer;
+    padding: 10px ;
+    margin:  5px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+    border: 1px solid #c19a6b;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+.tab-button:hover,
+.tab-button.active {
+    background: #ddd;
+}
+.report-content {
+    display: none;
+}
+.report-content.active {
+    display: block;
 }

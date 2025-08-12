@@ -1,4 +1,5 @@
-async function login() {
+async function login(e) {
+    e.preventDefault(); // Prevent default form submission
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const message = document.getElementById('loginMessage');
@@ -13,6 +14,7 @@ async function login() {
     
     if (!username || !password) {
         message.textContent = 'Please enter both username and password';
+        message.style.color = '#e74c3c';
         return;
     }
     
@@ -31,18 +33,22 @@ async function login() {
             } catch (err) {
                 console.error('LocalStorage error:', err);
                 message.textContent = 'Error saving session. Please try again.';
+                message.style.color = '#e74c3c';
                 return;
             }
             window.location.href = 'regsys.html';
         } else {
             message.textContent = data.error || 'Login failed';
+            message.style.color = '#e74c3c';
         }
     } catch (err) {
         message.textContent = 'Network error: ' + err.message;
+        message.style.color = '#e74c3c';
     }
 }
 
-async function register() {
+async function register(e) {
+    e.preventDefault(); // Prevent default form submission
     const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const message = document.getElementById('registerMessage');
@@ -57,6 +63,7 @@ async function register() {
     
     if (!username || !password) {
         message.textContent = 'Please enter both username and password';
+        message.style.color = '#e74c3c';
         return;
     }
     
@@ -70,42 +77,43 @@ async function register() {
         
         if (response.ok) {
             message.textContent = data.message || 'Registration successful';
+            message.style.color = '#4CAF50';
             setTimeout(() => window.location.href = 'login.html', 2000);
         } else {
             message.textContent = data.error || 'Registration failed';
+            message.style.color = '#e74c3c';
         }
     } catch (err) {
         message.textContent = 'Network error: ' + err.message;
-    }
-}
-
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const content = document.getElementById('content');
-    if (sidebar && content) {
-        sidebar.classList.toggle('open');
-        content.classList.toggle('shift');
-    } else {
-        console.error('Sidebar or content element not found');
+        message.style.color = '#e74c3c';
     }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
-    const toggleButton = document.getElementById('toggleSidebar');
+    const menuToggle = document.querySelector('.menu-toggle');
+    const menuClose = document.querySelector('.menu-close');
     
-    if (loginForm && document.getElementById('loginButton')) {
-        document.getElementById('loginButton').addEventListener('click', login);
+    if (loginForm) {
+        loginForm.addEventListener('submit', login);
     }
     
-    if (registerForm && document.getElementById('registerButton')) {
-        document.getElementById('registerButton').addEventListener('click', register);
+    if (registerForm) {
+        registerForm.addEventListener('submit', register);
     }
     
-    if (toggleButton) {
-        toggleButton.addEventListener('click', toggleSidebar);
+    if (menuToggle && menuClose) {
+        menuToggle.addEventListener('click', () => {
+            document.querySelector('.side-menu').classList.toggle('active');
+            document.querySelector('.header-wrapper').classList.toggle('menu-active');
+        });
+        
+        menuClose.addEventListener('click', () => {
+            document.querySelector('.side-menu').classList.remove('active');
+            document.querySelector('.header-wrapper').classList.remove('menu-active');
+        });
     } else {
-        console.error('Toggle button not found');
+        console.error('Menu toggle or close elements not found');
     }
 });

@@ -1,41 +1,126 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LECSA Church</title>
-    <link rel="stylesheet" href = "styles.css">
+	<link rel="stylesheet" href="styles.css">
+	<link rel="preconnecy" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <button id="toggleSidebar" class="menu-toggle">☰</button>
-            <h1>LECSA Church</h1>
+	
+<div class="header-wrapper">
+	<div class="menu-toggle">
+		<i class="fa fa-bars"></i>
+	</div>
+	
+    <div class="side-menu"> 
+		<div class="menu-close">
+            <i class="fa fa-times"></i>
         </div>
-    </header>
-
-    <nav id="sidebar">
-        <ul>
-            <li><a href="index.html">Announcements</a></li>
-            <li><a href="index.html">Events</a></li>
-            <li><a href="login.html">Login</a></li>
-            <li><a href="register.html">Register</a></li>
-        </ul>
-    </nav>
-
-    <div id="content" class="container">
-        <div class="sections-grid">
-            <section class="announcements-section">
-                <h2>Announcements</h2>
-                <div id="announcementList">Loading announcements...</div>
-            </section>
-            <section class="events-section">
-                <h2>Events</h2>
-                <div>Loading Events...</div>
-            </section>
+		<div class="menu-logo"> 
+			<img src="images/logo.jpg"><span>Botha-Bothe Parish</span>
         </div>
+			
+            <a href="index.html"><i class="fa fa-home"></i> <span> Home</span></a>
+            <a href="#announcements"><i class="fa fa-bullhorn"></i> <span> Announcements</span></a>
+            <a href="#events"><i class="fa fa-calendar"></i> <span> Events</span></a>
+            <a href="#committee"><i class="fa fa-users"></i> <span> Committee</span></a>
+            <a href="login.html"><i class="fa fa-sign-in"></i> <span> Login</span></a>
+        </div>
+		
+        <section class="header">
+            <div class="text-box">
+                <h1>LECSA Botha-Bothe</h1>
+                <p>Tseba tsohle ka liketsahalo ka hara parish ea rona</p>
+                <a href="" class="hero-btn">Visit Us To know More</a>
+            </div>
+        </section>
     </div>
+	
+	
+<! Announcements --->	
 
-    <script src="index.js"></script>
+<section class="announcements" id="announcements">
+	<h1>Litsebiso</h1>
+	<p>Tsohle tsa bohlokoa</p>
+	
+	<div class="row">
+		<div class="announcement-col" onclick="">
+			<h3>Sontaha Sa Teboho Le Tlotliso</h3>
+			<p>Sohle se tsamiele hantle ka Sontaha la 13 Phupu 2025.<br> Re lakatsa ho leboha bohle bileng teng le ba kentseng letsoho ho atlehisa Sontaha sena</br></p>
+		</div>
+		<div class="announcement-col" onclick="">
+		<h3>Ba Bacha ba Hlola Lipineng</h3>
+			<p>Mokhatlo oa Ba Bacha o no ile litlholisanong tsa mmino Ha Mopeli mme ba khutla ba hapile mohope oo ka boemo ba pele. <br>Rea ba lebohisa.</br></p>
+		</div>
+	</div>
+</section>
+
+<!  Events --->
+<section class="events" id="events">
+	<h1>Liketsahalo</h1>
+	<p>Tsohle tse tla etsahala</p>
+	
+	<div class="row">
+		<div class="announcement-col" onclick="">
+			<h3>Leeto La Thapelo</h3>
+			<p>Sohle se tsamiele hantle ka Sontaha la 13 Phupu 2025.<br> Re lakatsa ho leboha bohle bileng teng le ba kentseng letsoho ho atlehisa Sontaha sena</br></p>
+		</div>
+		<div class="announcement-col" onclick="">
+		<h3>Ba Bacha ba Hlola Lipineng</h3>
+			<p>Mokhatlo oa Ba Bacha o no ile litlholisanong tsa mmino Ha Mopeli mme ba khutla ba hapile mohope oo ka boemo ba pele. <br>Rea ba lebohisa.</br></p>
+		</div>
+	</div>
+	
+</section>
+
+<! Komiti --->
+
+<section class="committee" id="committee">
+	<h1>Komiti Ea Rona</h1>
+	<p>Tseba ka ba tsamaisong</p>
+	
+	<div class="row">
+		<div class="committee-col">
+			<img src="images/">
+			<div>
+				<p>
+	</div>
+</section>
+<! JavaScript for Toggle Menu --->	
+<script>
+	    // Smooth scrolling for anchor links
+    document.querySelectorAll('.side-menu a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Close the sidebar if on mobile
+            document.querySelector('.side-menu').classList.remove('active');
+            document.querySelector('.header-wrapper').classList.remove('menu-active');
+            
+            // Scroll to the target section
+            const targetId = this.getAttribute('href');
+            if(targetId !== '#') {
+                document.querySelector(targetId).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Keep existing toggle functionality
+    document.querySelector('.menu-toggle').addEventListener('click', function() {
+        document.querySelector('.side-menu').classList.add('active');
+        document.querySelector('.header-wrapper').classList.add('menu-active');
+    });
+    
+    document.querySelector('.menu-close').addEventListener('click', function() {
+        document.querySelector('.side-menu').classList.remove('active');
+        document.querySelector('.header-wrapper').classList.remove('menu-active');
+    });
+</script>	
+	
 </body>
 </html>

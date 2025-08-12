@@ -3,7 +3,7 @@ async function fetchRecentActivities() {
     const recentBaptism = document.getElementById('recentBaptism');
     const recentWedding = document.getElementById('recentWedding');
     if (!recentMember || !recentBaptism || !recentWedding) {
-        console.error('Recent activity elements not found', {
+         console.warn('Recent activity elements not found', {
             recentMember: !!recentMember,
             recentBaptism: !!recentBaptism,
             recentWedding: !!recentWedding
@@ -19,7 +19,7 @@ async function fetchRecentActivities() {
         });
         if (!memberResponse.ok) {
             const text = await memberResponse.text();
-            console.error('Fetch members failed:', { status: memberResponse.status, text });
+             console.warn('Fetch members failed:', { status: memberResponse.status, text });
             throw new Error(`Failed to fetch members: HTTP ${memberResponse.status}`);
         }
         const members = await memberResponse.json();
@@ -32,7 +32,7 @@ async function fetchRecentActivities() {
         });
         if (!baptismResponse.ok) {
             const text = await baptismResponse.text();
-            console.error('Fetch baptisms failed:', { status: baptismResponse.status, text });
+             console.warn('Fetch baptisms failed:', { status: baptismResponse.status, text });
             throw new Error(`Failed to fetch baptisms: HTTP ${baptismResponse.status}`);
         }
         const baptisms = await baptismResponse.json();
@@ -45,7 +45,7 @@ async function fetchRecentActivities() {
         });
         if (!weddingResponse.ok) {
             const text = await weddingResponse.text();
-            console.error('Fetch weddings failed:', { status: weddingResponse.status, text });
+             console.warn('Fetch weddings failed:', { status: weddingResponse.status, text });
             throw new Error(`Failed to fetch weddings: HTTP ${weddingResponse.status}`);
         }
         const weddings = await weddingResponse.json();
@@ -53,7 +53,7 @@ async function fetchRecentActivities() {
             ? `${weddings[0].groom_first_name} & ${weddings[0].bride_first_name} on ${new Date(weddings[0].wedding_date).toLocaleDateString()}`
             : 'No weddings recorded';
     } catch (err) {
-        console.error('Fetch activities error:', err);
+         console.warn('Fetch activities error:', err);
         recentMember.textContent = `Failed to load member data: ${err.message}`;
         recentBaptism.textContent = `Failed to load baptism data: ${err.message}`;
         recentWedding.textContent = `Failed to load wedding data: ${err.message}`;
@@ -66,7 +66,7 @@ function logout() {
         localStorage.removeItem('role');
         window.location.href = 'login.html';
     } catch (err) {
-        console.error('Logout error:', err);
+         console.warn('Logout error:', err);
         alert('Error logging out: ' + err.message);
     }
 }
@@ -81,7 +81,10 @@ document.addEventListener('DOMContentLoaded', () => {
         const adminLink = document.getElementById('adminLink');
         if (adminLink) adminLink.style.display = 'block';
     }
-    fetchRecentActivities();
+	//Skip fetchRecentActivities on financials page
+	if (!window.location.pathname.includes('financials.html')) {
+        fetchRecentActivities();
+    }
     const toggleButton = document.getElementById('toggleSidebar');
     const logoutLink = document.getElementById('logoutLink');
     if (toggleButton) {
@@ -92,7 +95,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 sidebar.classList.toggle('open');
                 content.classList.toggle('shift');
             } else {
-                console.error('Sidebar or content not found');
+                 console.warn('Sidebar or content not found');
             }
         });
     }

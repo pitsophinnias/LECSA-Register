@@ -1,7 +1,7 @@
 console.log('manyalo.js loaded at:', new Date().toISOString());
 
-async function fetchWeddingArchives() {
-    console.log('fetchWeddingArchives started at:', new Date().toISOString());
+async function fetchWeddingArchives(search = '') {
+    console.log('fetchWeddingArchives called with search:', search);
     const errorEl = document.getElementById('error') || document.createElement('div');
     errorEl.id = 'error';
     document.body.prepend(errorEl);
@@ -21,11 +21,12 @@ async function fetchWeddingArchives() {
             setTimeout(() => { window.location.href = 'login.html'; }, 2000);
             throw new Error('No token');
         }
-        console.log('Fetching with token:', token.substring(0, 10) + '...');
-        const response = await fetch('/api/weddings', {
+        const apiUrl = `/api/weddings?search=${encodeURIComponent(search)}`;
+        console.log('Fetching weddings from:', apiUrl);
+        const response = await fetch(apiUrl, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        console.log('API response:', { status: response.status, ok: response.ok });
+        console.log('API response status:', response.status, 'OK:', response.ok);
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             console.error('API error:', errorData);
@@ -34,7 +35,7 @@ async function fetchWeddingArchives() {
             throw new Error(errorData.error || `HTTP ${response.status}`);
         }
         const weddings = await response.json();
-        console.log('Fetched weddings raw:', JSON.stringify(weddings, null, 2));
+        console.log('Fetched weddings:', weddings);
         if (!Array.isArray(weddings)) {
             console.error('Invalid data:', weddings);
             errorEl.textContent = 'Error: Invalid server data.';
@@ -65,7 +66,7 @@ async function fetchWeddingArchives() {
                     location: location
                 };
                 const recordStr = btoa(JSON.stringify(recordData));
-                console.log('Generated record string (base64):', recordStr);
+                console.log('Generated record for wedding ID:', w.id || 'unknown', 'data:', recordData);
                 return `<tr data-id="${w.id || 'unknown'}">
                     <td class="border p-2">${groomName}</td>
                     <td class="border p-2">${brideName}</td>
@@ -142,7 +143,7 @@ async function recordWedding(event) {
     }
 
     const formData = new FormData(form);
-    console.log('Form Data:', Object.fromEntries(formData)); // Debug log
+    console.log('Form Data:', Object.fromEntries(formData));
     const weddingData = {
         groom_first_name: formData.get('groomLebitso')?.trim(),
         groom_middle_name: formData.get('groomLaKereke')?.trim() || null,
@@ -157,7 +158,6 @@ async function recordWedding(event) {
         location: formData.get('location')?.trim()
     };
 
-    // Detailed validation
     const missingFields = [];
     if (!weddingData.groom_first_name) missingFields.push('Groom Lebitso');
     if (!weddingData.groom_surname) missingFields.push('Groom Fane');
@@ -217,7 +217,6 @@ function logout() {
     window.location.href = 'login.html';
 }
 
-// Toggles the visibility of the sidebar
 function toggleSidebar() {
     console.log('Toggling sidebar at:', new Date().toISOString());
     const sidebar = document.getElementById('sidebar');
@@ -259,4 +258,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if (weddingForm) weddingForm.addEventListener('submit', recordWedding);
     else console.error('Wedding form not found');
     fetchWeddingArchives();
+    handleSearch('search', fetchWeddingArchives);
 });
+
+// Utility function to debounce search input to prevent excessive API calls
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+/**
+ * Handles search functionality for weddings.
+ * Attaches a debounced input event listener to the search input element and triggers
+ * the fetchWeddingArchives function with the search input value.
+ * 
+ * @param {string} inputId - The ID of the search input element ('search').
+ * @param {Function} fetchFunction - The function to call to fetch data (fetchWeddingArchives).
+ * @param {number} [debounceTime=300] - Time in milliseconds to debounce the input event.
+ */
+function handleSearch(inputId, fetchFunction, debounceTime = 300) {
+    const searchInput = document.getElementById(inputId);
+    if (!searchInput) {
+        console.error(`Search input with ID '${inputId}' not found`);
+        const errorEl = document.getElementById('error');
+        if (errorEl) errorEl.textContent = `Error: Search input not found`;
+        return;
+    }
+    const debouncedFetch = debounce(() => {
+        const searchTerm = searchInput.value.trim();
+        console.log(`Search triggered for input '${inputId}' with value: ${searchTerm}`);
+        fetchFunction(searchTerm);
+    }, debounceTime);
+    searchInput.addEventListener('input', debouncedFetch);
+    console.log(`Search handler initialized for input '${inputId}'`);
+}

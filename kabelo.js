@@ -86,7 +86,7 @@ async function updateReceipt(palo, year, value, doneButton) {
     }
 }
 
-async function archiveMember(palo, status) {
+async function archiveMember(palo, status, id = null) {
     const errorEl = document.getElementById('error');
     if (!errorEl) {
         console.error('Error element not found');
@@ -100,14 +100,16 @@ async function archiveMember(palo, status) {
             errorEl.textContent = 'Insufficient permissions';
             return;
         }
-        console.log('Sending PUT /api/members/', palo, '/archive with:', { status });
+        const payload = { status };
+        if (id) payload.id = id;
+        console.log('Sending PUT /api/members/', palo, '/archive with:', { palo, id, status });
         const response = await fetch(`/api/members/${palo}/archive`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`
             },
-            body: JSON.stringify({ status })
+            body: JSON.stringify(payload)
         });
         const data = await response.json();
         if (!response.ok) {
@@ -151,6 +153,7 @@ async function fetchMembers() {
         const isBoardMember = localStorage.getItem('role') === 'board_member';
         members.forEach(member => {
             const row = document.createElement('tr');
+            row.dataset.id = member.id || ''; // Store member id if available
             row.innerHTML = `
                 <td class="border p-2">${member.palo}</td>
                 <td class="border p-2">${member.lebitso}</td>
@@ -165,8 +168,8 @@ async function fetchMembers() {
                 `).join('')}
                 <td class="border p-2">
                     ${isBoardMember ? '' : `
-                        <button class="action-button moved-button">Moved</button>
-                        <button class="action-button deceased-button">Deceased</button>
+                        <button class="action-button moved-button" data-id="${member.id || ''}">Moved</button>
+                        <button class="action-button deceased-button" data-id="${member.id || ''}">Deceased</button>
                     `}
                 </td>
             `;
@@ -216,7 +219,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const toggleButton = document.getElementById('toggleSidebar');
     const logoutLink = document.getElementById('logoutLink');
     if (memberForm) memberForm.addEventListener('submit', addMember);
-    if (searchInput) searchInput.addEventListener('input', fetchMembers);
+    if (searchInput) {
+        handleSearch('search', fetchMembers);
+    }
     if (toggleButton) {
         toggleButton.addEventListener('click', () => {
             const sidebar = document.getElementById('sidebar');
@@ -250,11 +255,49 @@ document.addEventListener('DOMContentLoaded', () => {
         } else if (e.target.classList.contains('moved-button')) {
             const row = e.target.closest('tr');
             const palo = row.cells[0].textContent;
-            archiveMember(palo, 'Moved');
+            const id = e.target.dataset.id;
+            archiveMember(palo, 'Moved', id);
         } else if (e.target.classList.contains('deceased-button')) {
             const row = e.target.closest('tr');
             const palo = row.cells[0].textContent;
-            archiveMember(palo, 'Deceased');
+            const id = e.target.dataset.id;
+            archiveMember(palo, 'Deceased', id);
         }
     });
 });
+
+// Utility function to debounce search input to prevent excessive API calls
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+/**
+ * Handles search functionality for members.
+ * Attaches a debounced input event listener to the search input element and triggers
+ * the fetchMembers function when the input changes.
+ * 
+ * @param {string} inputId - The ID of the search input element ('search').
+ * @param {Function} fetchFunction - The function to call to fetch data (fetchMembers).
+ * @param {number} [debounceTime=300] - Time in milliseconds to debounce the input event.
+ */
+function handleSearch(inputId, fetchFunction, debounceTime = 300) {
+    const searchInput = document.getElementById(inputId);
+    if (!searchInput) {
+        console.error(`Search input with ID '${inputId}' not found`);
+        const errorEl = document.getElementById('error');
+        if (errorEl) errorEl.textContent = `Error: Search input not found`;
+        return;
+    }
+    const debouncedFetch = debounce(() => {
+        console.log(`Search triggered with value: ${searchInput.value}`);
+        fetchFunction();
+    }, debounceTime);
+    const newInput = searchInput.cloneNode(true);
+    searchInput.parentNode.replaceChild(newInput, searchInput);
+    newInput.addEventListener('input', debouncedFetch);
+    console.log(`Search handler initialized for input '${inputId}'`);
+}

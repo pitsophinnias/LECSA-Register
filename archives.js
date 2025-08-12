@@ -1,6 +1,6 @@
 console.log('archives.js loaded at:', new Date().toISOString());
-async function fetchArchives() {
-    console.log('fetchArchives started at:', new Date().toISOString());
+async function fetchArchives(search = '') {
+    console.log('fetchArchives called with search:', search);
     const errorEl = document.getElementById('error') || document.createElement('div');
     errorEl.id = 'error';
     document.body.prepend(errorEl);
@@ -23,11 +23,12 @@ async function fetchArchives() {
             setTimeout(() => { window.location.href = 'login.html'; }, 2000);
             throw new Error('No token');
         }
-        console.log('Fetching with token:', token.substring(0, 10) + '...');
-        const response = await fetch('/api/archives', {
+        const apiUrl = `/api/archives?search=${encodeURIComponent(search)}`;
+        console.log('Fetching archives from:', apiUrl);
+        const response = await fetch(apiUrl, {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        console.log('API response:', { status: response.status, ok: response.ok });
+        console.log('API response status:', response.status, 'OK:', response.ok);
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             console.error('API error:', errorData);
@@ -50,10 +51,10 @@ async function fetchArchives() {
             weddings: archives.filter(r => r.record_type === 'wedding').length
         });
         tables.movedList.innerHTML = archives.filter(r => r.record_type === 'member' && r.details?.status === 'Moved')
-            .map(r => `<tr data-id="${r.id}"><td class="border p-2">${r.details?.lebitso || 'Unknown'}</td><td class="border p-2">${r.details?.fane || 'Unknown'}</td><td class="border p-2">${r.palo || 'N/A'}</td><td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${JSON.stringify(r).replace(/'/g, "\\'")}' data-open="false">Details</button></td></tr>`)
+            .map(r => `<tr data-id="${r.id}"><td class="border p-2">${r.details?.lebitso || 'Unknown'}</td><td class="border p-2">${r.details?.fane || 'Unknown'}</td><td class="border p-2">${r.palo || 'N/A'}</td><td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${JSON.stringify(r).replace(/'/g, "\\'")}' data-open="false">Details</button> <button class="restoreBtn bg-green-500 text-white p-1 rounded" data-id="${r.id}">Restore</button></td></tr>`)
             .join('') || '<tr><td colspan="4" class="border p-2 text-center">No moved members found</td></tr>';
         tables.deceasedList.innerHTML = archives.filter(r => r.record_type === 'member' && r.details?.status === 'Deceased')
-            .map(r => `<tr data-id="${r.id}"><td class="border p-2">${r.details?.lebitso || 'Unknown'}</td><td class="border p-2">${r.details?.fane || 'Unknown'}</td><td class="border p-2">${r.palo || 'N/A'}</td><td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${JSON.stringify(r).replace(/'/g, "\\'")}' data-open="false">Details</button> <button class="restoreBtn bg-green-500 text-white p-1 rounded" data-id="${r.id}">Restore</button></td></tr>`)
+            .map(r => `<tr data-id="${r.id}"><td class="border p-2">${r.details?.lebitso || 'Unknown'}</td><td class="border p-2">${r.details?.fane || 'Unknown'}</td><td class="border p-2">${r.palo || 'N/A'}</td><td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${JSON.stringify(r).replace(/'/g, "\\'")}' data-open="false">Details</button></td></tr>`)
             .join('') || '<tr><td colspan="4" class="border p-2 text-center">No deceased members found</td></tr>';
         tables.baptismList.innerHTML = archives.filter(r => r.record_type === 'baptism')
             .map(r => `<tr data-id="${r.id}"><td class="border p-2">${r.details?.name || 'Unknown'}</td><td class="border p-2">${r.details?.baptism_date ? new Date(r.details.baptism_date).toLocaleDateString() : 'N/A'}</td><td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${JSON.stringify(r).replace(/'/g, "\\'")}' data-open="false">Details</button></td></tr>`)
@@ -249,4 +250,40 @@ document.addEventListener('DOMContentLoaded', () => {
     if (logoutLink) logoutLink.addEventListener('click', logout);
     else console.error('Logout link not found');
     fetchArchives();
+    handleSearch('search', fetchArchives);
 });
+
+// Utility function to debounce search input to prevent excessive API calls
+function debounce(func, wait) {
+    let timeout;
+    return function (...args) {
+        clearTimeout(timeout);
+        timeout = setTimeout(() => func.apply(this, args), wait);
+    };
+}
+
+/**
+ * Handles search functionality for archives.
+ * Attaches a debounced input event listener to the search input element and triggers
+ * the fetchArchives function with the search input value.
+ * 
+ * @param {string} inputId - The ID of the search input element ('search').
+ * @param {Function} fetchFunction - The function to call to fetch data (fetchArchives).
+ * @param {number} [debounceTime=300] - Time in milliseconds to debounce the input event.
+ */
+function handleSearch(inputId, fetchFunction, debounceTime = 300) {
+    const searchInput = document.getElementById(inputId);
+    if (!searchInput) {
+        console.error(`Search input with ID '${inputId}' not found`);
+        const errorEl = document.getElementById('error');
+        if (errorEl) errorEl.textContent = `Error: Search input not found`;
+        return;
+    }
+    const debouncedFetch = debounce(() => {
+        const searchTerm = searchInput.value.trim();
+        console.log(`Search triggered for input '${inputId}' with value: ${searchTerm}`);
+        fetchFunction(searchTerm);
+    }, debounceTime);
+    searchInput.addEventListener('input', debouncedFetch);
+    console.log(`Search handler initialized for input '${inputId}'`);
+}

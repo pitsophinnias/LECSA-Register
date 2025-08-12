@@ -3,106 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manyalo (Weddings)</title>
+    <title>LECSA Weddings</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <style>
-        #sidebar {
-            position: fixed;
-            height: 100%;
-            width: 64px; /* Default width when closed */
-            background-color: #1e40af;
-            color: white;
-            padding: 1rem;
-            transition: all 0.3s ease;
-            left: -64px; /* Start off-screen */
-        }
-        #sidebar.open {
-            width: 16rem; /* Expanded width */
-            left: 0; /* Move into view */
-        }
-        #content {
-            margin-left: 0;
-            padding: 1rem;
-            transition: all 0.3s ease;
-        }
-        #content.shift {
-            margin-left: 16rem; /* Shift content when sidebar is open */
-        }
-    </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div id="sidebar" class="fixed h-full w-64 bg-blue-800 text-white p-4 transition-all duration-300 -left-64 open:left-0">
-        <h2 class="text-xl font-bold mb-4">LECSA Menu</h2>
-        <ul>
-            <li><a href="regsys.html" class="block py-2">Back to Dashboard</a></li>
-            <li><a href="archives.html" class="block py-2">Archives</a></li>
-            <li><a href="admin.html" id="logoutLink" class="block py-2">Admin</a></li>
-            <li><a href="login.html" id="logoutLink" class="block py-2">Logout</a></li>
-        </ul>
+<body class="bg-gray-100">
+    <div class="flex h-screen">
+        <div id="sidebar" class="bg-gray-800 text-white w-64 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0">
+            <h2 class="text-2xl font-bold p-4">LECSA Menu</h2>
+            <nav class="mt-4">
+                <a href="dashboard.html" class="block py-2 px-4 hover:bg-gray-700">Back to Dashboard</a>
+                <a href="archives.html" class="block py-2 px-4 hover:bg-gray-700">Archives</a>
+                <a href="admin.html" id="adminLink" class="block py-2 px-4 hover:bg-gray-700 hidden">Admin</a>
+                <a href="#" id="logoutLink" class="block py-2 px-4 hover:bg-gray-700">Logout</a>
+            </nav>
+        </div>
+
+        <div id="content" class="flex-1 p-6 transition-all duration-300 ease-in-out md:ml-64">
+            <button id="toggleSidebar" class="md:hidden p-2 bg-gray-800 text-white rounded mb-4">☰</button>
+            <h1 class="text-3xl font-bold mb-4">Manyalo (Weddings)</h1>
+
+            <div id="error" class="text-red-500 mb-4"></div>
+
+            <div class="mb-8">
+                <h2 class="text-2xl font-bold mb-2">Record Wedding</h2>
+                <form id="weddingForm" class="space-y-4">
+                    <div>
+                        <label for="groomLebitso" class="block">Groom Lebitso:</label>
+                        <input type="text" id="groomLebitso" name="groomLebitso" class="w-full p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="groomLaKereke" class="block">Groom La Kereke (Optional):</label>
+                        <input type="text" id="groomLaKereke" name="groomLaKereke" class="w-full p-2 border">
+                    </div>
+                    <div>
+                        <label for="groomFane" class="block">Groom Fane:</label>
+                        <input type="text" id="groomFane" name="groomFane" class="w-full p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="groomIdNumber" class="block">Groom ID Number:</label>
+                        <input type="text" id="groomIdNumber" name="groomIdNumber" class="w-full p-2 border">
+                    </div>
+                    <div>
+                        <label for="brideLebitso" class="block">Bride Lebitso:</label>
+                        <input type="text" id="brideLebitso" name="brideLebitso" class="w-full p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="brideLaKereke" class="block">Bride La Kereke (Optional):</label>
+                        <input type="text" id="brideLaKereke" name="brideLaKereke" class="w-full p-2 border">
+                    </div>
+                    <div>
+                        <label for="brideFane" class="block">Bride Fane:</label>
+                        <input type="text" id="brideFane" name="brideFane" class="w-full p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="brideIdNumber" class="block">Bride ID Number:</label>
+                        <input type="text" id="brideIdNumber" name="brideIdNumber" class="w-full p-2 border">
+                    </div>
+                    <div>
+                        <label for="weddingDate" class="block">Wedding Date:</label>
+                        <input type="date" id="weddingDate" name="weddingDate" class="w-full p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="moruti" class="block">Moruti:</label>
+                        <input type="text" id="moruti" name="moruti" class="w-full p-2 border" required>
+                    </div>
+                    <div>
+                        <label for="location" class="block">Location:</label>
+                        <input type="text" id="location" name="location" class="w-full p-2 border" required>
+                    </div>
+                    <button type="submit" class="bg-blue-500 text-white p-2 rounded">Record</button>
+                </form>
+            </div>
+
+            <!-- Search input for weddings -->
+            <div class="mb-4">
+                <input type="text" id="search" placeholder="Search weddings..." class="w-full p-2 border">
+            </div>
+
+            <h2 class="text-2xl font-bold mb-2">Wedding Records</h2>
+            <table class="w-full border-collapse border">
+                <thead>
+                    <tr class="bg-gray-200">
+                        <th class="border p-2">Groom</th>
+                        <th class="border p-2">Bride</th>
+                        <th class="border p-2">Date</th>
+                        <th class="border p-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="weddingList"></tbody>
+            </table>
+        </div>
     </div>
-    <div id="content" class="ml-0 transition-all duration-300 p-4 shift:ml-64">
-        <button id="toggleSidebar" class="bg-blue-500 text-white p-2 mb-4">☰</button>
-        <h1 class="text-2xl font-bold mb-4">Manyalo (Weddings)</h1>
-        <div id="error" class="text-red-500 mb-4"></div>
-        <form id="weddingForm" class="bg-white p-6 rounded shadow">
-            <h2 class="text-xl font-semibold mb-4">Record Wedding</h2>
-            <div class="mb-4">
-                <label class="block mb-1">Groom Lebitso:</label>
-                <input type="text" name="groomLebitso" class="w-full p-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Groom La Kereke (Optional):</label>
-                <input type="text" name="groomLaKereke" class="w-full p-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Groom Fane:</label>
-                <input type="text" name="groomFane" class="w-full p-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Groom ID Number:</label>
-                <input type="text" name="groomIdNumber" class="w-full p-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Bride Lebitso:</label>
-                <input type="text" name="brideLebitso" class="w-full p-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Bride La Kereke (Optional):</label>
-                <input type="text" name="brideLaKereke" class="w-full p-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Bride Fane:</label>
-                <input type="text" name="brideFane" class="w-full p-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Bride ID Number:</label>
-                <input type="text" name="brideIdNumber" class="w-full p-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Wedding Date:</label>
-                <input type="date" name="weddingDate" class="w-full p-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Moruti:</label>
-                <input type="text" name="moruti" class="w-full p-2 border rounded">
-            </div>
-            <div class="mb-4">
-                <label class="block mb-1">Location:</label>
-                <input type="text" name="location" class="w-full p-2 border rounded">
-            </div>
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded">Record</button>
-        </form>
-        <h2 class="text-xl font-semibold mt-6">Wedding Records</h2>
-        <table id="weddingList" class="w-full mt-2 border-collapse">
-            <tr class="bg-gray-200">
-                <th class="border p-2">Groom</th>
-                <th class="border p-2">Bride</th>
-                <th class="border p-2">Date</th>
-                <th class="border p-2">Actions</th>
-            </tr>
-        </table>
-        <div id="weddingDetails" class="hidden mt-4"></div>
-    </div>
+
     <script src="manyalo.js"></script>
 </body>
 </html>
