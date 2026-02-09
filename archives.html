@@ -5,93 +5,118 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LECSA Archives</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	<script src="backend-mock.js" defer></script>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="flex">
-        <div id="sidebar" class="fixed inset-y-0 left-0 w-64 bg-blue-800 text-white transform -translate-x-full transition-transform duration-300 ease-in-out">
-            <div class="p-4">
-                <h2 class="text-xl font-bold">LECSA Menu</h2>
-                <ul class="mt-4 space-y-2">
-                    <li><a href="announcements.html" class="block p-2 hover:bg-blue-700 rounded">Announcements</a></li>
-                    <li><a href="events.html" class="block p-2 hover:bg-blue-700 rounded">Events</a></li>
-                    <li><a href="regsys.html" class="block p-2 hover:bg-blue-700 rounded">Back to Dashboard</a></li>
-                    <li><a href="archives.html" class="block p-2 hover:bg-blue-700 rounded">Archives</a></li>
-                    <li id="adminLink" class="hidden"><a href="admin.html" class="block p-2 hover:bg-blue-700 rounded">Admin</a></li>
-                    <li><a id="logoutLink" href="#" class="block p-2 hover:bg-blue-700 rounded">Logout</a></li>
-                </ul>
+<body>
+    <div class="header-wrapper">
+        <div class="side-menu" id="sidebar">
+            <div class="menu-logo">
+                <img src="images/logo.png" alt="LECSA Logo">
+                <span>LECSA Menu</span>
             </div>
+            <a href="index.html"><i class="fas fa-home"></i><span>Announcements</span></a>
+            <a href="events.html"><i class="fas fa-calendar"></i><span>Events</span></a>
+            <a href="regsys.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+            <a href="archives.html" class="active"><i class="fas fa-archive"></i><span>Archives</span></a>
+            <a href="admin.html" id="adminLink" style="display: none;"><i class="fas fa-user-shield"></i><span>Admin</span></a>
+            <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+            <div class="menu-close" id="menuClose"><i class="fas fa-times"></i></div>
         </div>
-        <div id="content" class="flex-1 p-6 transition-all duration-300 ml-0">
-            <button id="toggleSidebar" class="text-2xl mb-4">☰</button>
-            <h1 class="text-2xl font-bold mb-4">Archives</h1>
-            <div id="error" class="text-red-500 mb-4"></div>
-            <div class="mb-6">
-                <input type="text" id="search" placeholder="Search archives..." class="w-full p-2 border rounded mb-4">
-                <h2 class="text-xl font-semibold mb-2">Ba Falletseng (Moved)</h2>
-                <table class="w-full border-collapse">
+        <div class="menu-toggle" id="toggleSidebar"><i class="fas fa-bars"></i></div>
+        <div id="content" class="archives-section">
+            <h1>Archives</h1>
+            <div id="error"></div>
+            <div class="search-container">
+                <input type="text" id="search" placeholder="Search archives...">
+            </div>
+            <div class="archive-box">
+                <h2>Ba Falletseng (Moved)</h2>
+                <table>
                     <thead>
-                        <tr class="bg-gray-200">
-                            <th class="border p-2">Lebitso</th>
-                            <th class="border p-2">Fane</th>
-                            <th class="border p-2">Palo</th>
-                            <th class="border p-2">Actions</th>
+                        <tr>
+                            <th>Lebitso</th>
+                            <th>Fane</th>
+                            <th>Palo</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="movedList"></tbody>
                 </table>
             </div>
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-2">Ba Hlokahetseng (Deceased)</h2>
-                <table class="w-full border-collapse">
+            <div class="archive-box">
+                <h2>Ba Hlokahetseng (Deceased)</h2>
+                <table>
                     <thead>
-                        <tr class="bg-gray-200">
-                            <th class="border p-2">Lebitso</th>
-                            <th class="border p-2">Fane</th>
-                            <th class="border p-2">Palo</th>
-                            <th class="border p-2">Actions</th>
+                        <tr>
+                            <th>Lebitso</th>
+                            <th>Fane</th>
+                            <th>Palo</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="deceasedList"></tbody>
                 </table>
             </div>
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-2">Baptisms</h2>
-                <table class="w-full border-collapse">
+            <div class="archive-box">
+                <h2>Baptisms</h2>
+                <table>
                     <thead>
-                        <tr class="bg-gray-200">
-                            <th class="border p-2">Name</th>
-                            <th class="border p-2">Baptism Date</th>
-                            <th class="border p-2">Actions</th>
+                        <tr>
+                            <th>Name</th>
+                            <th>Baptism Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="baptismList"></tbody>
                 </table>
             </div>
-            <div class="mb-6">
-                <h2 class="text-xl font-semibold mb-2">Weddings</h2>
-                <table class="w-full border-collapse">
+            <div class="archive-box">
+                <h2>Weddings</h2>
+                <table>
                     <thead>
-                        <tr class="bg-gray-200">
-                            <th class="border p-2">Groom</th>
-                            <th class="border p-2">Bride</th>
-                            <th class="border p-2">Wedding Date</th>
-                            <th class="border p-2">Actions</th>
+                        <tr>
+                            <th>Groom</th>
+                            <th>Bride</th>
+                            <th>Wedding Date</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody id="weddingList"></tbody>
                 </table>
             </div>
-            <div id="detailsModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center hidden">
-                <div class="bg-white p-6 rounded shadow-lg max-w-lg w-full">
-                    <h2 class="text-xl font-semibold mb-4">Record Details</h2>
-                    <table class="w-full border-collapse">
-                        <tbody id="detailsTable"></tbody>
-                    </table>
-                    <button id="closeModal" class="mt-4 bg-blue-500 text-white p-2 rounded hover:bg-blue-600">Close</button>
-                </div>
+            <div id="detailsModal" class="modal hidden">
+                <h2>Record Details</h2>
+                <table>
+                    <tbody id="detailsTable"></tbody>
+                </table>
+                <button id="closeModal">Close</button>
             </div>
         </div>
     </div>
     <script src="archives.js"></script>
+	<script>
+    // Sidebar toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+        const menuClose = document.getElementById('menuClose');
+
+        if (toggleButton && sidebar && content) {
+            toggleButton.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+                content.classList.toggle('shift');
+            });
+        }
+
+        if (menuClose) {
+            menuClose.addEventListener('click', function() {
+                sidebar.classList.remove('open');
+                content.classList.remove('shift');
+            });
+        }
+    });
+</script>
 </body>
 </html>

@@ -5,24 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LECSA Church - Kabelo Register</title>
     <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-    <div id="sidebar">
-        <h2>LECSA Menu</h2>
-        <nav>
-            <ul>
-                <li><a href="index.html">Announcements</a></li>
-                <li><a href="events.html">Events</a></li>
-                <li><a href="regsys.html">Back to Dashboard</a></li>
-                <li><a href="archives.html">Archives</a></li>
-                <li><a href="admin.html" id="adminLink" style="display: none;">Admin</a></li>
-                <li><a href="#" id="logoutLink">Logout</a></li>
-            </ul>
-        </nav>
-    </div>
-    <div id="content">
-        <button id="toggleSidebar">☰</button>
-        <div class="container">
+    <div class="header-wrapper">
+        <div class="side-menu" id="sidebar">
+            <div class="menu-logo">
+                <img src="images/logo.png" alt="LECSA Logo">
+                <span>LECSA Menu</span>
+            </div>
+            <a href="index.html"><i class="fas fa-home"></i><span>Announcements</span></a>
+            <a href="events.html"><i class="fas fa-calendar"></i><span>Events</span></a>
+            <a href="regsys.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+            <a href="archives.html"><i class="fas fa-archive"></i><span>Archives</span></a>
+            <a href="admin.html" id="adminLink" style="display: none;"><i class="fas fa-user-shield"></i><span>Admin</span></a>
+            <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+            <div class="menu-close" id="menuClose"><i class="fas fa-times"></i></div>
+        </div>
+        <div class="menu-toggle" id="toggleSidebar"><i class="fas fa-bars"></i></div>
+        <div id="content" class="kabelo-section">
             <h1>Kabelo Register</h1>
             <div class="search-container">
                 <input type="text" id="search" placeholder="Search members...">
@@ -40,27 +41,52 @@
                 <button type="submit" class="action-button">Register</button>
                 <p id="error" class="error"></p>
             </form>
-            <h2>Current Members</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Palo</th>
-                        <th>Lebitso</th>
-                        <th>Fane</th>
-                        <th>2024</th>
-                        <th>2025</th>
-                        <th>2026</th>
-                        <th>2027</th>
-                        <th>2028</th>
-                        <th>2029</th>
-                        <th>2030</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="memberList"></tbody>
-            </table>
+            <!-- Update the table header in kabelo.html -->
+			<h2>Current Members <span id="totalCount" class="total-count">Loading...</span></h2>
+            <table id="membersList">
+				<thead>
+					<tr>
+						<th>#</th>
+						<th>First Name</th>
+						<th>Last Name</th>
+						<th>Gender</th>
+						<th>Phone</th>
+						<th>Role</th>
+						<th>Location</th>
+						<th>Date Joined</th>
+						<th>Receipt #</th>
+						<th>Actions</th>
+					</tr>
+				</thead>
+				<tbody>
+				<!-- Will be populated by JavaScript -->
+				</tbody>
+			</table>
         </div>
     </div>
     <script src="kabelo.js"></script>
+	<script>
+    // Sidebar toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+        const menuClose = document.getElementById('menuClose');
+
+        if (toggleButton && sidebar && content) {
+            toggleButton.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+                content.classList.toggle('shift');
+            });
+        }
+
+        if (menuClose) {
+            menuClose.addEventListener('click', function() {
+                sidebar.classList.remove('open');
+                content.classList.remove('shift');
+            });
+        }
+    });
+</script>
 </body>
 </html>

@@ -1,76 +1,71 @@
 console.log('archives.js loaded at:', new Date().toISOString());
+
 async function fetchArchives(search = '') {
     console.log('fetchArchives called with search:', search);
     const errorEl = document.getElementById('error') || document.createElement('div');
     errorEl.id = 'error';
     document.body.prepend(errorEl);
-    const tables = {
-        movedList: document.getElementById('movedList'),
-        deceasedList: document.getElementById('deceasedList'),
-        baptismList: document.getElementById('baptismList'),
-        weddingList: document.getElementById('weddingList')
-    };
-    if (!tables.movedList || !tables.deceasedList || !tables.baptismList || !tables.weddingList) {
-        console.error('Missing table elements:', tables);
-        errorEl.textContent = 'Error: Page structure broken. Please refresh.';
+    
+    // For development - show loading message
+    if (!localStorage.getItem('token')) {
+        errorEl.textContent = 'Please log in to view archives';
+        setTimeout(() => { window.location.href = 'login.html'; }, 2000);
         return;
     }
+    
     try {
-        const token = localStorage.getItem('token');
-        if (!token) {
-            console.error('No token found');
-            errorEl.textContent = 'Error: Please log in to view archives.';
-            setTimeout(() => { window.location.href = 'login.html'; }, 2000);
-            throw new Error('No token');
-        }
-        const apiUrl = `/api/archives?search=${encodeURIComponent(search)}`;
-        console.log('Fetching archives from:', apiUrl);
-        const response = await fetch(apiUrl, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        console.log('API response status:', response.status, 'OK:', response.ok);
-        if (!response.ok) {
-            const errorData = await response.json().catch(() => ({}));
-            console.error('API error:', errorData);
-            errorEl.textContent = `Error: ${errorData.error || 'Failed to fetch archives (Status: ' + response.status + ')'}`;
-            if (response.status === 401) setTimeout(() => { window.location.href = 'login.html'; }, 2000);
-            throw new Error(errorData.error || `HTTP ${response.status}`);
-        }
-        const archives = await response.json();
-        console.log('Fetched archives:', archives);
-        if (!Array.isArray(archives)) {
-            console.error('Invalid data:', archives);
-            errorEl.textContent = 'Error: Invalid server data.';
-            throw new Error('Invalid data');
-        }
-        console.log('Records:', {
-            total: archives.length,
-            moved: archives.filter(r => r.record_type === 'member' && r.details?.status === 'Moved').length,
-            deceased: archives.filter(r => r.record_type === 'member' && r.details?.status === 'Deceased').length,
-            baptisms: archives.filter(r => r.record_type === 'baptism').length,
-            weddings: archives.filter(r => r.record_type === 'wedding').length
-        });
-        tables.movedList.innerHTML = archives.filter(r => r.record_type === 'member' && r.details?.status === 'Moved')
-            .map(r => `<tr data-id="${r.id}"><td class="border p-2">${r.details?.lebitso || 'Unknown'}</td><td class="border p-2">${r.details?.fane || 'Unknown'}</td><td class="border p-2">${r.palo || 'N/A'}</td><td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${JSON.stringify(r).replace(/'/g, "\\'")}' data-open="false">Details</button> <button class="restoreBtn bg-green-500 text-white p-1 rounded" data-id="${r.id}">Restore</button></td></tr>`)
-            .join('') || '<tr><td colspan="4" class="border p-2 text-center">No moved members found</td></tr>';
-        tables.deceasedList.innerHTML = archives.filter(r => r.record_type === 'member' && r.details?.status === 'Deceased')
-            .map(r => `<tr data-id="${r.id}"><td class="border p-2">${r.details?.lebitso || 'Unknown'}</td><td class="border p-2">${r.details?.fane || 'Unknown'}</td><td class="border p-2">${r.palo || 'N/A'}</td><td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${JSON.stringify(r).replace(/'/g, "\\'")}' data-open="false">Details</button></td></tr>`)
-            .join('') || '<tr><td colspan="4" class="border p-2 text-center">No deceased members found</td></tr>';
-        tables.baptismList.innerHTML = archives.filter(r => r.record_type === 'baptism')
-            .map(r => `<tr data-id="${r.id}"><td class="border p-2">${r.details?.name || 'Unknown'}</td><td class="border p-2">${r.details?.baptism_date ? new Date(r.details.baptism_date).toLocaleDateString() : 'N/A'}</td><td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${JSON.stringify(r).replace(/'/g, "\\'")}' data-open="false">Details</button></td></tr>`)
-            .join('') || '<tr><td colspan="3" class="border p-2 text-center">No archived baptisms found</td></tr>';
-        tables.weddingList.innerHTML = archives.filter(r => r.record_type === 'wedding')
-            .map(r => `<tr data-id="${r.id}"><td class="border p-2">${r.details?.groom_name || 'Unknown'}</td><td class="border p-2">${r.details?.bride_name || 'Unknown'}</td><td class="border p-2">${r.details?.wedding_date ? new Date(r.details.wedding_date).toLocaleDateString() : 'N/A'}</td><td class="border p-2"><button class="detailsBtn bg-blue-500 text-white p-1 rounded" data-record='${JSON.stringify(r).replace(/'/g, "\\'")}' data-open="false">Details</button></td></tr>`)
-            .join('') || '<tr><td colspan="4" class="border p-2 text-center">No archived weddings found</td></tr>';
-        document.querySelectorAll('.detailsBtn').forEach(btn => btn.addEventListener('click', () => toggleDetails(btn)));
-        document.querySelectorAll('.restoreBtn').forEach(btn => btn.addEventListener('click', () => restoreRecord(btn.dataset.id)));
+        // ... rest of existing code ...
+        
     } catch (err) {
         console.error('Fetch error:', err);
-        errorEl.textContent = `Error: ${err.message}`;
-        Object.values(tables).forEach(table => table.innerHTML = `<tr><td colspan="${table.id === 'baptismList' ? 3 : 4}" class="border p-2 text-center">Failed to load ${table.id.replace('List', '')}</td></tr>`);
+        // For development, show mock data
+        if (err.message.includes('404') || err.message.includes('Endpoint not found')) {
+            console.log('Using mock data for development');
+            // Display mock data
+            const tables = {
+                movedList: document.getElementById('movedList'),
+                deceasedList: document.getElementById('deceasedList'),
+                baptismList: document.getElementById('baptismList'),
+                weddingList: document.getElementById('weddingList')
+            };
+            
+            tables.movedList.innerHTML = `
+                <tr>
+                    <td class="border p-2">Test</td>
+                    <td class="border p-2">Member</td>
+                    <td class="border p-2">999</td>
+                    <td class="border p-2">
+                        <button class="detailsBtn bg-blue-500 text-white p-1 rounded" 
+                                data-record='{"id":1,"record_type":"member","details":{"lebitso":"Test","fane":"Member","status":"Moved"},"palo":999}'
+                                data-open="false">Details</button>
+                        <button class="restoreBtn bg-green-500 text-white p-1 rounded" data-id="1">Restore</button>
+                    </td>
+                </tr>
+            `;
+            
+            tables.deceasedList.innerHTML = `
+                <tr>
+                    <td class="border p-2">Archived</td>
+                    <td class="border p-2">Member</td>
+                    <td class="border p-2">998</td>
+                    <td class="border p-2">
+                        <button class="detailsBtn bg-blue-500 text-white p-1 rounded" 
+                                data-record='{"id":2,"record_type":"member","details":{"lebitso":"Archived","fane":"Member","status":"Deceased"},"palo":998}'
+                                data-open="false">Details</button>
+                    </td>
+                </tr>
+            `;
+            
+            // Setup event listeners for mock buttons
+            setTimeout(() => {
+                document.querySelectorAll('.detailsBtn').forEach(btn => btn.addEventListener('click', () => toggleDetails(btn)));
+                document.querySelectorAll('.restoreBtn').forEach(btn => btn.addEventListener('click', () => restoreRecord(btn.dataset.id)));
+            }, 100);
+        } else {
+            errorEl.textContent = `Error: ${err.message}`;
+        }
     }
 }
-
 function toggleDetails(btn) {
     console.log('Toggling details for button:', btn);
     const isOpen = btn.dataset.open === 'true';

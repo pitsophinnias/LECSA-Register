@@ -3,133 +3,125 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>LECSA Menu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+    <title>LECSA Baptisms</title>
     <link rel="stylesheet" href="styles.css">
-    <script src="likolobetso.js" defer></script>
-    <script>
-        // Handle sidebar toggle and logout
-        document.addEventListener('DOMContentLoaded', () => {
-            const token = localStorage.getItem('token');
-            if (!token) {
-                window.location.href = 'login.html';
-                return;
-            }
-            const role = localStorage.getItem('role');
-            if (['pastor', 'secretary'].includes(role)) {
-                const adminLink = document.getElementById('adminLink');
-                if (adminLink) adminLink.style.display = 'block';
-            }
-            const toggleButton = document.getElementById('toggleSidebar');
-            const sidebar = document.getElementById('sidebar');
-            const content = document.getElementById('content');
-            const logoutLink = document.getElementById('logoutLink');
-            if (toggleButton && sidebar && content) {
-                toggleButton.addEventListener('click', () => {
-                    sidebar.classList.toggle('open');
-                    content.classList.toggle('shift');
-                });
-            }
-            if (logoutLink) {
-                logoutLink.addEventListener('click', () => {
-                    try {
-                        localStorage.removeItem('token');
-                        localStorage.removeItem('role');
-                        window.location.href = 'login.html';
-                    } catch (err) {
-                        console.error('Logout error:', err);
-                        alert('Error logging out: ' + err.message);
-                    }
-                });
-            }
-        });
-    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	
 </head>
-<body class="bg-white">
-    <div id="sidebar" class="p-4 shadow">
-        <h2 class="text-xl font-bold mb-4">LECSA Menu</h2>
-        <nav>
-            <a href="announcements.html" class="block mb-2">Announcements</a>
-            <a href="events.html" class="block mb-2">Events</a>
-            <a href="index.html" class="block mb-2">Back to Dashboard</a>
-            <a href="admin.html" id="adminLink" class="block mb-2" style="display: none;">Admin</a>
-            <a href="#" id="logoutLink" class="block mb-2">Logout</a>
-        </nav>
-    </div>
-    <div id="content" class="p-4">
-        <button id="toggleSidebar" class="p-2">☰</button>
-        <h1 class="text-2xl font-bold mb-4">Likolobetso (Baptisms)</h1>
-        <h2 class="text-xl font-bold mb-2">Add Baptism</h2>
-        <form id="baptismForm" class="mb-4">
-            <div class="mb-2">
-                <label for="first_name">First Name:</label>
-                <input type="text" id="first_name" name="first_name" class="border p-2" required>
+<body>
+    <div class="header-wrapper">
+        <div class="side-menu" id="sidebar">
+            <div class="menu-logo">
+                <img src="images/logo.png" alt="LECSA Logo">
+                <span>LECSA Menu</span>
             </div>
-            <div class="mb-2">
-                <label for="middle_name">Middle Name:</label>
-                <input type="text" id="middle_name" name="middle_name" class="border p-2">
-            </div>
-            <div class="mb-2">
-                <label for="surname">Surname:</label>
-                <input type="text" id="surname" name="surname" class="border p-2" required>
-            </div>
-            <div class="mb-2">
-                <label for="date_of_birth">Date of Birth:</label>
-                <input type="date" id="date_of_birth" name="date_of_birth" class="border p-2" required>
-            </div>
-            <div class="mb-2">
-                <label for="father_first_name">Father's First Name:</label>
-                <input type="text" id="father_first_name" name="father_first_name" class="border p-2" required>
-            </div>
-            <div class="mb-2">
-                <label for="father_middle_name">Father's Middle Name:</label>
-                <input type="text" id="father_middle_name" name="father_middle_name" class="border p-2">
-            </div>
-            <div class="mb-2">
-                <label for="father_surname">Father's Surname:</label>
-                <input type="text" id="father_surname" name="father_surname" class="border p-2" required>
-            </div>
-            <div class="mb-2">
-                <label for="mother_first_name">Mother's First Name:</label>
-                <input type="text" id="mother_first_name" name="mother_first_name" class="border p-2" required>
-            </div>
-            <div class="mb-2">
-                <label for="mother_middle_name">Mother's Middle Name:</label>
-                <input type="text" id="mother_middle_name" name="mother_middle_name" class="border p-2">
-            </div>
-            <div class="mb-2">
-                <label for="mother_surname">Mother's Surname:</label>
-                <input type="text" id="mother_surname" name="mother_surname" class="border p-2" required>
-            </div>
-            <div class="mb-2">
-                <label for="baptism_date">Baptism Date:</label>
-                <input type="date" id="baptism_date" name="baptism_date" class="border p-2" required>
-            </div>
-            <div class="mb-2">
-                <label for="pastor">Pastor:</label>
-                <input type="text" id="pastor" name="pastor" class="border p-2" required>
-            </div>
-            <button type="submit" class="action-button">Add Baptism</button>
-        </form>
-        <h2 class="text-xl font-bold mb-2">Baptism Records</h2>
-        <div class="search-container">
-            <input type="text" id="searchInput" placeholder="Search baptisms..." class="border p-2">
+            <a href="index.html"><i class="fas fa-home"></i><span>Announcements</span></a>
+            <a href="events.html"><i class="fas fa-calendar"></i><span>Events</span></a>
+            <a href="regsys.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+            <a href="archives.html"><i class="fas fa-archive"></i><span>Archives</span></a>
+            <a href="admin.html" id="adminLink" style="display: none;"><i class="fas fa-user-shield"></i><span>Admin</span></a>
+            <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+            <div class="menu-close" id="menuClose"><i class="fas fa-times"></i></div>
         </div>
-        <table class="w-full border-collapse">
-            <thead>
-                <tr>
-                    <th class="border p-2">First Name</th>
-                    <th class="border p-2">Middle Name</th>
-                    <th class="border p-2">Surname</th>
-                    <th class="border p-2">Date of Birth</th>
-                    <th class="border p-2">Father's Name</th>
-                    <th class="border p-2">Mother's Name</th>
-                    <th class="border p-2">Baptism Date</th>
-                    <th class="border p-2">Pastor</th>
-                </tr>
-            </thead>
-            <tbody id="baptismList"></tbody>
-        </table>
+        <div class="menu-toggle" id="toggleSidebar"><i class="fas fa-bars"></i></div>
+        <div id="content" class="likolobetso-section">
+            <h1>Likolobetso (Baptisms)</h1>
+            <h2>Add Baptism</h2>
+            <form id="baptismForm">
+                <div>
+                    <label for="first_name">First Name:</label>
+                    <input type="text" id="first_name" name="first_name" required>
+                </div>
+                <div>
+                    <label for="middle_name">Middle Name:</label>
+                    <input type="text" id="middle_name" name="middle_name">
+                </div>
+                <div>
+                    <label for="surname">Surname:</label>
+                    <input type="text" id="surname" name="surname" required>
+                </div>
+                <div>
+                    <label for="date_of_birth">Date of Birth:</label>
+                    <input type="date" id="date_of_birth" name="date_of_birth" required>
+                </div>
+                <div>
+                    <label for="father_first_name">Father's First Name:</label>
+                    <input type="text" id="father_first_name" name="father_first_name" required>
+                </div>
+                <div>
+                    <label for="father_middle_name">Father's Middle Name:</label>
+                    <input type="text" id="father_middle_name" name="father_middle_name">
+                </div>
+                <div>
+                    <label for="father_surname">Father's Surname:</label>
+                    <input type="text" id="father_surname" name="father_surname" required>
+                </div>
+                <div>
+                    <label for="mother_first_name">Mother's First Name:</label>
+                    <input type="text" id="mother_first_name" name="mother_first_name" required>
+                </div>
+                <div>
+                    <label for="mother_middle_name">Mother's Middle Name:</label>
+                    <input type="text" id="mother_middle_name" name="mother_middle_name">
+                </div>
+                <div>
+                    <label for="mother_surname">Mother's Surname:</label>
+                    <input type="text" id="mother_surname" name="mother_surname" required>
+                </div>
+                <div>
+                    <label for="baptism_date">Baptism Date:</label>
+                    <input type="date" id="baptism_date" name="baptism_date" required>
+                </div>
+                <div>
+                    <label for="pastor">Pastor:</label>
+                    <input type="text" id="pastor" name="pastor" required>
+                </div>
+                <button type="submit" class="action-button">Add Baptism</button>
+            </form>
+            <h2>Baptism Records</h2>
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Search baptisms...">
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Middle Name</th>
+                        <th>Surname</th>
+                        <th>Date of Birth</th>
+                        <th>Father's Name</th>
+                        <th>Mother's Name</th>
+                        <th>Baptism Date</th>
+                        <th>Pastor</th>
+                    </tr>
+                </thead>
+                <tbody id="baptismList"></tbody>
+            </table>
+        </div>
     </div>
+    <script src="likolobetso.js"></script>
+	<script>
+    // Sidebar toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+        const menuClose = document.getElementById('menuClose');
+
+        if (toggleButton && sidebar && content) {
+            toggleButton.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+                content.classList.toggle('shift');
+            });
+        }
+
+        if (menuClose) {
+            menuClose.addEventListener('click', function() {
+                sidebar.classList.remove('open');
+                content.classList.remove('shift');
+            });
+        }
+    });
+</script>
 </body>
 </html>

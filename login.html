@@ -8,39 +8,25 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
-	<div class="header-wrapper">
-    <div class="side-menu">
-        <div class="menu-close"><i class="fas fa-times"></i></div>
-		<div class="menu-logo">
-            <img src="images/logo.jpg" alt="LECSA Logo">
-            <span>LECSA Menu</span>
-        </div>
-        <a href="index.html"><i class="fas fa-home"></i><span>Home</span></a>
-        <a href="register.html"><i class="fas fa-user-plus"></i><span>Register</span></a>
+    <div class="container">
+        <a href="index.html" class="home-icon"><i class="fas fa-home"></i></a>
+        <section class="login-section">
+            <h2>LECSA Church Login</h2>
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button type="submit" class="btn">Login</button>
+                <p id="login-error" style="color: var(--danger-color); display: none;"></p>
+                <p><a href="register.html" class="register-link">Don't have an account? Register here</a></p>
+            </form>
+        </section>
     </div>
-
-    <div class="menu-toggle"><i class="fas fa-bars"></i></div>
-
-    <div class="header-wrapper">
-        <div class="header">
-            <div class="auth-section">
-                <h2>LECSA Church</h2>
-                <form id="loginForm">
-                    <div>
-                        <label for="username">Username:</label>
-                        <input type="text" id="username" required>
-                    </div>
-                    <div>
-                        <label for="password">Password:</label>
-                        <input type="password" id="password" required>
-                    </div>
-                    <button type="submit" id="loginButton">Login</button>
-                    <p id="loginMessage"></p>
-                </form>
-                <p class="register-link">Don't have an account? <a href="register.html">Register</a></p>
-            </div>
-        </div>
-    </div>
-    <script src="script.js"></script>
+    <script src="login.js"></script>
 </body>
 </html>

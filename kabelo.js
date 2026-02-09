@@ -1,303 +1,581 @@
-async function addMember(e) {
-    e.preventDefault();
-    const form = document.getElementById('memberForm');
-    const errorEl = document.getElementById('error');
-    if (!form || !errorEl) {
-        console.error('Form or error element not found');
-        errorEl.textContent = 'Form error: Please refresh the page';
-        return;
-    }
-    const formData = new FormData(form);
-    const lebitso = formData.get('lebitso').trim();
-    const fane = formData.get('fane').trim();
-    if (!lebitso || !fane) {
-        console.error('Missing required fields:', { lebitso, fane });
-        errorEl.textContent = 'Please fill all required fields';
-        return;
-    }
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) throw new Error('Please log in to continue');
-        if (localStorage.getItem('role') === 'board_member') {
-            console.error('Insufficient permissions for role:', localStorage.getItem('role'));
-            errorEl.textContent = 'Insufficient permissions';
-            return;
-        }
-        console.log('Sending POST /api/members with:', { lebitso, fane });
-        const response = await fetch('/api/members', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ lebitso, fane })
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            console.error('POST /api/members failed:', { status: response.status, data });
-            throw new Error(data.error || `Failed to register member: HTTP ${response.status}`);
-        }
-        console.log('Member registered:', data);
-        await fetchMembers();
-        form.reset();
-        errorEl.textContent = 'Member registered successfully';
-        setTimeout(() => errorEl.textContent = '', 3000);
-    } catch (err) {
-        console.error('Registration error:', err);
-        errorEl.textContent = `Error: ${err.message}`;
-    }
-}
-
-async function updateReceipt(palo, year, value, doneButton) {
-    const errorEl = document.getElementById('error');
-    if (!doneButton || !errorEl) {
-        console.error('Done button or error element not found');
-        return;
-    }
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) throw new Error('Please log in to continue');
-        if (localStorage.getItem('role') === 'board_member') {
-            console.error('Insufficient permissions for role:', localStorage.getItem('role'));
-            errorEl.textContent = 'Insufficient permissions';
-            return;
-        }
-        console.log('Sending PUT /api/members/', palo, '/receipt with:', { year, value });
-        const response = await fetch(`/api/members/${palo}/receipt`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ year, receipt: value.trim() })
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            console.error('PUT /api/members/', palo, '/receipt failed:', { status: response.status, data });
-            throw new Error(data.error || `Failed to update receipt: HTTP ${response.status}`);
-        }
-        console.log('Receipt updated:', data);
-        doneButton.style.display = 'none';
-        errorEl.textContent = 'Receipt updated successfully';
-        setTimeout(() => errorEl.textContent = '', 3000);
-    } catch (err) {
-        console.error('Update receipt error:', err);
-        errorEl.textContent = `Error: ${err.message}`;
-    }
-}
-
-async function archiveMember(palo, status, id = null) {
-    const errorEl = document.getElementById('error');
-    if (!errorEl) {
-        console.error('Error element not found');
-        return;
-    }
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) throw new Error('Please log in to continue');
-        if (localStorage.getItem('role') === 'board_member') {
-            console.error('Insufficient permissions for role:', localStorage.getItem('role'));
-            errorEl.textContent = 'Insufficient permissions';
-            return;
-        }
-        const payload = { status };
-        if (id) payload.id = id;
-        console.log('Sending PUT /api/members/', palo, '/archive with:', { palo, id, status });
-        const response = await fetch(`/api/members/${palo}/archive`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify(payload)
-        });
-        const data = await response.json();
-        if (!response.ok) {
-            console.error('PUT /api/members/', palo, '/archive failed:', { status: response.status, data });
-            throw new Error(data.error || `Failed to mark member as ${status}: HTTP ${response.status}`);
-        }
-        console.log('Member archived:', data);
-        await fetchMembers();
-        errorEl.textContent = `Member marked as ${status}`;
-        setTimeout(() => errorEl.textContent = '', 3000);
-    } catch (err) {
-        console.error('Archive error:', err);
-        errorEl.textContent = `Error: ${err.message}`;
-    }
-}
-
-async function fetchMembers() {
-    const memberList = document.getElementById('memberList');
-    const searchInput = document.getElementById('search');
-    const errorEl = document.getElementById('error');
-    if (!memberList || !searchInput || !errorEl) {
-        console.error('Member list, search input, or error element not found');
-        errorEl.textContent = 'Error: Page elements not found';
-        return;
-    }
-    try {
-        const token = localStorage.getItem('token');
-        if (!token) throw new Error('Please log in to continue');
-        const search = searchInput.value.trim();
-        console.log('Sending GET /api/members with search:', search);
-        const response = await fetch(`/api/members?search=${encodeURIComponent(search)}`, {
-            headers: { 'Authorization': `Bearer ${token}` }
-        });
-        const members = await response.json();
-        if (!response.ok) {
-            console.error('GET /api/members failed:', { status: response.status, members });
-            throw new Error(members.error || `Failed to fetch members: HTTP ${response.status}`);
-        }
-        console.log('Members fetched:', members);
-        memberList.innerHTML = '';
-        const isBoardMember = localStorage.getItem('role') === 'board_member';
-        members.forEach(member => {
-            const row = document.createElement('tr');
-            row.dataset.id = member.id || ''; // Store member id if available
-            row.innerHTML = `
-                <td class="border p-2">${member.palo}</td>
-                <td class="border p-2">${member.lebitso}</td>
-                <td class="border p-2">${member.fane}</td>
-                ${[2024, 2025, 2026, 2027, 2028, 2029, 2030].map(year => `
-                    <td class="border p-2">
-                        ${isBoardMember ? (member[`receipt_${year}`] || '-') : `
-                            <input type="text" value="${member[`receipt_${year}`] || ''}" data-palo="${member.palo}" data-year="${year}" class="receipt-input w-full p-1 border">
-                            <button class="done-button action-button" style="display: none;">Done</button>
-                        `}
-                    </td>
-                `).join('')}
-                <td class="border p-2">
-                    ${isBoardMember ? '' : `
-                        <button class="action-button moved-button" data-id="${member.id || ''}">Moved</button>
-                        <button class="action-button deceased-button" data-id="${member.id || ''}">Deceased</button>
-                    `}
-                </td>
-            `;
-            memberList.appendChild(row);
-        });
-    } catch (err) {
-        console.error('Fetch members error:', err);
-        memberList.innerHTML = '<tr><td colspan="10">Failed to load members</td></tr>';
-        errorEl.textContent = `Error: ${err.message}`;
-    }
-}
-
-function logout() {
-    try {
-        localStorage.removeItem('token');
-        localStorage.removeItem('role');
-    } catch (err) {
-        console.error('Logout error:', err);
-        alert('Error logging out: ' + err.message);
-    }
-    window.location.href = 'login.html';
-}
-
+// Kabelo Management System
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Kabelo page loaded, checking authentication...');
+    
+    // Check if user is authenticated
     const token = localStorage.getItem('token');
     if (!token) {
         window.location.href = 'login.html';
         return;
     }
-    const role = localStorage.getItem('role');
-    if (['pastor', 'secretary'].includes(role)) {
-        const adminLink = document.getElementById('adminLink');
-        if (adminLink) adminLink.style.display = 'block';
-    }
-    if (role === 'board_member') {
-        const memberForm = document.getElementById('memberForm');
-        if (memberForm) memberForm.style.display = 'none';
-    }
-    const urlParams = new URLSearchParams(window.location.search);
-    const lebitsoInput = document.getElementById('lebitso');
-    const faneInput = document.getElementById('fane');
-    if (lebitsoInput && urlParams.get('lebitso')) lebitsoInput.value = urlParams.get('lebitso');
-    if (faneInput && urlParams.get('fane')) faneInput.value = urlParams.get('fane');
-    fetchMembers();
+    
+    // Initialize page
+    initializePage();
+    
+    // Event Listeners
     const memberForm = document.getElementById('memberForm');
     const searchInput = document.getElementById('search');
-    const toggleButton = document.getElementById('toggleSidebar');
-    const logoutLink = document.getElementById('logoutLink');
-    if (memberForm) memberForm.addEventListener('submit', addMember);
+    
+    if (memberForm) {
+        memberForm.addEventListener('submit', handleMemberRegistration);
+    }
+    
     if (searchInput) {
-        handleSearch('search', fetchMembers);
+        searchInput.addEventListener('input', handleSearch);
     }
-    if (toggleButton) {
-        toggleButton.addEventListener('click', () => {
-            const sidebar = document.getElementById('sidebar');
-            const content = document.getElementById('content');
-            if (sidebar && content) {
-                sidebar.classList.toggle('open');
-                content.classList.toggle('shift');
-            } else {
-                console.error('Sidebar or content not found');
-            }
-        });
-    }
-    if (logoutLink) logoutLink.addEventListener('click', logout);
-    document.addEventListener('input', (e) => {
-        if (e.target.classList.contains('receipt-input')) {
-            const doneButton = e.target.nextElementSibling;
-            if (doneButton && doneButton.classList.contains('done-button')) {
-                doneButton.style.display = e.target.value.trim() !== (e.target.defaultValue || '') ? 'inline-block' : 'none';
-            }
-        }
-    });
-    document.addEventListener('click', (e) => {
-        if (e.target.classList.contains('done-button')) {
-            const input = e.target.previousElementSibling;
-            if (input && input.classList.contains('receipt-input')) {
-                const palo = input.dataset.palo;
-                const year = input.dataset.year;
-                const value = input.value;
-                updateReceipt(palo, year, value, e.target);
-            }
-        } else if (e.target.classList.contains('moved-button')) {
-            const row = e.target.closest('tr');
-            const palo = row.cells[0].textContent;
-            const id = e.target.dataset.id;
-            archiveMember(palo, 'Moved', id);
-        } else if (e.target.classList.contains('deceased-button')) {
-            const row = e.target.closest('tr');
-            const palo = row.cells[0].textContent;
-            const id = e.target.dataset.id;
-            archiveMember(palo, 'Deceased', id);
-        }
-    });
 });
 
-// Utility function to debounce search input to prevent excessive API calls
-function debounce(func, wait) {
-    let timeout;
-    return function (...args) {
-        clearTimeout(timeout);
-        timeout = setTimeout(() => func.apply(this, args), wait);
-    };
+// Global variables
+let currentMembers = [];
+let currentYear = new Date().getFullYear().toString();
+
+async function initializePage() {
+    try {
+        await fetchMembers();
+        displayMembers(currentMembers);
+        setupSidebar();
+    } catch (error) {
+        console.error('Error initializing page:', error);
+        showError('Failed to load members. Please refresh the page.');
+    }
 }
 
-/**
- * Handles search functionality for members.
- * Attaches a debounced input event listener to the search input element and triggers
- * the fetchMembers function when the input changes.
- * 
- * @param {string} inputId - The ID of the search input element ('search').
- * @param {Function} fetchFunction - The function to call to fetch data (fetchMembers).
- * @param {number} [debounceTime=300] - Time in milliseconds to debounce the input event.
- */
-function handleSearch(inputId, fetchFunction, debounceTime = 300) {
-    const searchInput = document.getElementById(inputId);
-    if (!searchInput) {
-        console.error(`Search input with ID '${inputId}' not found`);
-        const errorEl = document.getElementById('error');
-        if (errorEl) errorEl.textContent = `Error: Search input not found`;
+function setupSidebar() {
+    const toggleButton = document.getElementById('toggleSidebar');
+    const sidebar = document.getElementById('sidebar');
+    const content = document.getElementById('content');
+    const menuClose = document.getElementById('menuClose');
+    const logoutLink = document.getElementById('logoutLink');
+
+    if (toggleButton && sidebar && content) {
+        toggleButton.addEventListener('click', function() {
+            sidebar.classList.toggle('open');
+            content.classList.toggle('shift');
+        });
+    }
+
+    if (menuClose) {
+        menuClose.addEventListener('click', function() {
+            sidebar.classList.remove('open');
+            content.classList.remove('shift');
+        });
+    }
+
+    if (logoutLink) {
+        logoutLink.addEventListener('click', function(e) {
+            e.preventDefault();
+            logout();
+        });
+    }
+}
+
+function logout() {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    localStorage.removeItem('role');
+    window.location.href = 'login.html';
+}
+
+async function fetchMembers() {
+    const token = localStorage.getItem('token');
+    
+    try {
+        console.log('Fetching members from server...');
+        const response = await fetch('/api/members', {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+        
+        console.log('Response status:', response.status);
+        
+        if (!response.ok) {
+            if (response.status === 401 || response.status === 403) {
+                localStorage.removeItem('token');
+                window.location.href = 'login.html';
+                return;
+            }
+            throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        }
+        
+        const data = await response.json();
+        console.log('Fetched members from server:', data);
+        currentMembers = data;
+    } catch (error) {
+        console.error('Error fetching members:', error);
+        showError('Failed to fetch members. Please check your connection.');
+    }
+}
+
+function displayMembers(members) {
+    console.log('Displaying', members.length, 'members');
+    
+    const table = document.getElementById('membersList');
+    if (!table) {
+        console.error('Table not found!');
         return;
     }
-    const debouncedFetch = debounce(() => {
-        console.log(`Search triggered with value: ${searchInput.value}`);
-        fetchFunction();
-    }, debounceTime);
-    const newInput = searchInput.cloneNode(true);
-    searchInput.parentNode.replaceChild(newInput, searchInput);
-    newInput.addEventListener('input', debouncedFetch);
-    console.log(`Search handler initialized for input '${inputId}'`);
+    
+    const tbody = table.querySelector('tbody');
+    if (!tbody) {
+        console.error('Table body not found!');
+        return;
+    }
+    
+    tbody.innerHTML = '';
+    
+    const totalCount = document.getElementById('totalCount');
+    if (totalCount) {
+        totalCount.textContent = `(${members.length})`;
+    }
+    
+    if (members.length === 0) {
+        const row = document.createElement('tr');
+        row.innerHTML = `
+            <td colspan="10" style="text-align: center; padding: 40px; color: #666;">
+                No members found. Add your first member using the form above.
+            </td>
+        `;
+        tbody.appendChild(row);
+        return;
+    }
+    
+    members.forEach((member, index) => {
+        const row = document.createElement('tr');
+        
+        const formattedDate = member.created_at ? 
+            new Date(member.created_at).toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric'
+            }) : 'N/A';
+        
+        // Get current year receipt
+        const currentReceipt = member[`receipt_${currentYear}`] || '';
+        
+        row.innerHTML = `
+            <td>${member.palo || index + 1}</td>
+            <td>${member.lebitso || ''}</td>
+            <td>${member.fane || ''}</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>N/A</td>
+            <td>${formattedDate}</td>
+            <td class="receipt-cell">
+                <input 
+                    type="text" 
+                    class="receipt-input ${currentReceipt ? 'receipt-paid' : 'receipt-unpaid'}" 
+                    value="${currentReceipt}"
+                    placeholder="Enter receipt #"
+                    data-member-palo="${member.palo}"
+                    data-year="${currentYear}"
+                >
+                <button class="action-button save-receipt" data-member-palo="${member.palo}" data-year="${currentYear}">
+                    ${currentReceipt ? '✏️ Edit' : '💾 Save'}
+                </button>
+            </td>
+            <td>
+                <button class="action-button edit-member" data-member-palo="${member.palo}">✏️ Edit</button>
+                <button class="action-button delete-member" data-member-palo="${member.palo}">🗑️ Archive</button>
+            </td>
+        `;
+        
+        tbody.appendChild(row);
+    });
+    
+    addEventListeners();
+}
+
+function addEventListeners() {
+    // Edit buttons
+    document.querySelectorAll('.edit-member').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const memberPalo = button.getAttribute('data-member-palo');
+            editMember(memberPalo);
+        });
+    });
+    
+    // Archive buttons
+    document.querySelectorAll('.delete-member').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const memberPalo = button.getAttribute('data-member-palo');
+            archiveMember(memberPalo);
+        });
+    });
+    
+    // Save receipt buttons
+    document.querySelectorAll('.save-receipt').forEach(button => {
+        button.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const memberPalo = button.getAttribute('data-member-palo');
+            const year = button.getAttribute('data-year');
+            const input = document.querySelector(`.receipt-input[data-member-palo="${memberPalo}"][data-year="${year}"]`);
+            if (input) {
+                saveReceipt(memberPalo, year, input.value);
+            }
+        });
+    });
+    
+    // Enter key on receipt inputs
+    document.querySelectorAll('.receipt-input').forEach(input => {
+        input.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                e.stopPropagation();
+                const memberPalo = input.getAttribute('data-member-palo');
+                const year = input.getAttribute('data-year');
+                saveReceipt(memberPalo, year, input.value);
+            }
+        });
+    });
+}
+
+function handleSearch(event) {
+    const searchTerm = event.target.value.toLowerCase().trim();
+    
+    if (!searchTerm) {
+        displayMembers(currentMembers);
+        return;
+    }
+    
+    const filteredMembers = currentMembers.filter(member => 
+        (member.lebitso && member.lebitso.toLowerCase().includes(searchTerm)) ||
+        (member.fane && member.fane.toLowerCase().includes(searchTerm)) ||
+        (member.palo && member.palo.toString().includes(searchTerm))
+    );
+    
+    displayMembers(filteredMembers);
+}
+
+async function handleMemberRegistration(event) {
+    event.preventDefault();
+    
+    const lebitso = document.getElementById('lebitso').value.trim();
+    const fane = document.getElementById('fane').value.trim();
+    
+    if (!lebitso || !fane) {
+        showError('Please fill in both first name and last name');
+        return;
+    }
+    
+    const token = localStorage.getItem('token');
+    
+    try {
+        console.log('Registering new member:', { lebitso, fane });
+        
+        const response = await fetch('/api/members', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ lebitso, fane })
+        });
+        
+        console.log('Registration response status:', response.status);
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to register member');
+        }
+        
+        const result = await response.json();
+        console.log('Member registered successfully:', result);
+        
+        showSuccess('Member registered successfully!');
+        document.getElementById('memberForm').reset();
+        
+        await fetchMembers();
+        displayMembers(currentMembers);
+        
+    } catch (error) {
+        console.error('Error registering member:', error);
+        showError('Failed to register member: ' + error.message);
+    }
+}
+
+function editMember(memberPalo) {
+    console.log('Edit member clicked:', memberPalo);
+    const member = currentMembers.find(m => m.palo === memberPalo);
+    if (!member) {
+        showError('Member not found');
+        return;
+    }
+    
+    showEditModal(member);
+}
+
+function showEditModal(member) {
+    // Remove any existing modals
+    document.querySelectorAll('.modal-overlay').forEach(el => el.remove());
+    
+    // Create overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.style.cssText = `
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 2000;
+        animation: fadeIn 0.3s ease-out;
+    `;
+    
+    // Create modal
+    const modal = document.createElement('div');
+    modal.className = 'modal';
+    modal.style.cssText = `
+        background: white;
+        padding: 30px;
+        border-radius: 15px;
+        max-width: 500px;
+        width: 90%;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        animation: slideDown 0.3s ease-out;
+    `;
+    
+    modal.innerHTML = `
+        <h2 style="color: #333; margin-top: 0; padding-bottom: 15px; border-bottom: 2px solid #c19a6b;">
+            Edit Member #${member.palo}
+        </h2>
+        <form id="editMemberForm">
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">
+                    First Name (Lebitso):
+                </label>
+                <input type="text" id="edit-lebitso" value="${member.lebitso || ''}" required
+                    style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+            </div>
+            <div style="margin-bottom: 20px;">
+                <label style="display: block; margin-bottom: 5px; font-weight: 600; color: #333;">
+                    Last Name (Fane):
+                </label>
+                <input type="text" id="edit-fane" value="${member.fane || ''}" required
+                    style="width: 100%; padding: 10px; border: 2px solid #ddd; border-radius: 5px; font-size: 16px; box-sizing: border-box;">
+            </div>
+            <div style="display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px;">
+                <button type="submit" class="btn-primary" 
+                    style="padding: 10px 20px; background: #c19a6b; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                    Update
+                </button>
+                <button type="button" class="btn-secondary" id="cancelEdit"
+                    style="padding: 10px 20px; background: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: 600;">
+                    Cancel
+                </button>
+            </div>
+        </form>
+    `;
+    
+    // Add styles for animations
+    if (!document.querySelector('#modal-styles')) {
+        const style = document.createElement('style');
+        style.id = 'modal-styles';
+        style.textContent = `
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            @keyframes slideDown {
+                from { transform: translateY(-50px); opacity: 0; }
+                to { transform: translateY(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    // Append to document
+    document.body.appendChild(overlay);
+    document.body.appendChild(modal);
+    
+    // Add event listeners
+    const form = modal.querySelector('#editMemberForm');
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const lebitso = document.getElementById('edit-lebitso').value.trim();
+        const fane = document.getElementById('edit-fane').value.trim();
+        
+        if (!lebitso || !fane) {
+            alert('Please fill in both fields');
+            return;
+        }
+        
+        await updateMember(member.palo, lebitso, fane);
+    });
+    
+    modal.querySelector('#cancelEdit').addEventListener('click', () => {
+        modal.remove();
+        overlay.remove();
+    });
+    
+    // Close when clicking overlay
+    overlay.addEventListener('click', (e) => {
+        if (e.target === overlay) {
+            modal.remove();
+            overlay.remove();
+        }
+    });
+}
+
+async function updateMember(memberPalo, lebitso, fane) {
+    const token = localStorage.getItem('token');
+    
+    try {
+        console.log('Updating member:', memberPalo, { lebitso, fane });
+        
+        const response = await fetch(`/api/members/${memberPalo}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ lebitso, fane })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to update member');
+        }
+        
+        // Close modal
+        document.querySelector('.modal')?.remove();
+        document.querySelector('.modal-overlay')?.remove();
+        
+        showSuccess('Member updated successfully!');
+        
+        // Refresh members list
+        await fetchMembers();
+        displayMembers(currentMembers);
+        
+    } catch (error) {
+        console.error('Error updating member:', error);
+        showError('Failed to update member: ' + error.message);
+    }
+}
+
+async function archiveMember(memberPalo) {
+    console.log('Archive member clicked:', memberPalo);
+    
+    if (!confirm('Are you sure you want to archive this member? This action cannot be undone.')) {
+        return;
+    }
+    
+    const token = localStorage.getItem('token');
+    
+    try {
+        const reason = prompt('Please enter reason for archiving (Moved or Deceased):', 'Moved');
+        if (!reason || !['Moved', 'Deceased'].includes(reason)) {
+            showError('Please enter a valid reason: Moved or Deceased');
+            return;
+        }
+        
+        console.log('Archiving member:', memberPalo, 'reason:', reason);
+        
+        const response = await fetch(`/api/members/${memberPalo}/archive`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ status: reason })
+        });
+        
+        console.log('Archive response status:', response.status);
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to archive member');
+        }
+        
+        const result = await response.json();
+        console.log('Member archived successfully:', result);
+        
+        await fetchMembers();
+        displayMembers(currentMembers);
+        
+        showSuccess(`Member archived as ${reason}!`);
+        
+    } catch (error) {
+        console.error('Error archiving member:', error);
+        showError('Failed to archive member: ' + error.message);
+    }
+}
+
+async function saveReceipt(memberPalo, year, receiptNumber) {
+    const button = document.querySelector(`.save-receipt[data-member-palo="${memberPalo}"][data-year="${year}"]`);
+    const input = document.querySelector(`.receipt-input[data-member-palo="${memberPalo}"][data-year="${year}"]`);
+    
+    if (!button || !input) return;
+    
+    receiptNumber = receiptNumber.trim();
+    
+    // Save to server
+    const token = localStorage.getItem('token');
+    
+    try {
+        const response = await fetch(`/api/members/${memberPalo}/receipt`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ year, receipt: receiptNumber })
+        });
+        
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to save receipt');
+        }
+        
+        // Update UI
+        input.className = `receipt-input ${receiptNumber ? 'receipt-paid' : 'receipt-unpaid'}`;
+        button.textContent = receiptNumber ? '✏️ Edit' : '💾 Save';
+        
+        showSuccess('Receipt saved successfully!');
+        
+    } catch (error) {
+        console.error('Error saving receipt:', error);
+        showError('Failed to save receipt: ' + error.message);
+    }
+}
+
+// Helper functions for showing messages
+function showError(message) {
+    const errorElement = document.getElementById('error');
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+        errorElement.style.color = '#dc3545';
+        
+        setTimeout(() => {
+            errorElement.style.display = 'none';
+        }, 5000);
+    } else {
+        alert(message);
+    }
+}
+
+function showSuccess(message) {
+    const errorElement = document.getElementById('error');
+    if (errorElement) {
+        errorElement.textContent = message;
+        errorElement.style.display = 'block';
+        errorElement.style.color = '#28a745';
+        
+        setTimeout(() => {
+            errorElement.style.display = 'none';
+        }, 3000);
+    } else {
+        alert(message);
+    }
 }

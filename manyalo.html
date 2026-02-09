@@ -4,97 +4,116 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>LECSA Weddings</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
-<body class="bg-gray-100">
-    <div class="flex h-screen">
-        <div id="sidebar" class="bg-gray-800 text-white w-64 fixed inset-y-0 left-0 transform -translate-x-full transition-transform duration-300 ease-in-out md:relative md:translate-x-0">
-            <h2 class="text-2xl font-bold p-4">LECSA Menu</h2>
-            <nav class="mt-4">
-                <a href="dashboard.html" class="block py-2 px-4 hover:bg-gray-700">Back to Dashboard</a>
-                <a href="archives.html" class="block py-2 px-4 hover:bg-gray-700">Archives</a>
-                <a href="admin.html" id="adminLink" class="block py-2 px-4 hover:bg-gray-700 hidden">Admin</a>
-                <a href="#" id="logoutLink" class="block py-2 px-4 hover:bg-gray-700">Logout</a>
-            </nav>
+<body>
+    <div class="header-wrapper">
+        <div class="side-menu" id="sidebar">
+            <div class="menu-logo">
+                <img src="images/logo.png" alt="LECSA Logo">
+                <span>LECSA Menu</span>
+            </div>
+            <a href="index.html"><i class="fas fa-home"></i><span>Announcements</span></a>
+            <a href="events.html"><i class="fas fa-calendar"></i><span>Events</span></a>
+            <a href="regsys.html"><i class="fas fa-tachometer-alt"></i><span>Dashboard</span></a>
+            <a href="archives.html"><i class="fas fa-archive"></i><span>Archives</span></a>
+            <a href="admin.html" id="adminLink" style="display: none;"><i class="fas fa-user-shield"></i><span>Admin</span></a>
+            <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+            <div class="menu-close" id="menuClose"><i class="fas fa-times"></i></div>
         </div>
-
-        <div id="content" class="flex-1 p-6 transition-all duration-300 ease-in-out md:ml-64">
-            <button id="toggleSidebar" class="md:hidden p-2 bg-gray-800 text-white rounded mb-4">☰</button>
-            <h1 class="text-3xl font-bold mb-4">Manyalo (Weddings)</h1>
-
-            <div id="error" class="text-red-500 mb-4"></div>
-
-            <div class="mb-8">
-                <h2 class="text-2xl font-bold mb-2">Record Wedding</h2>
-                <form id="weddingForm" class="space-y-4">
-                    <div>
-                        <label for="groomLebitso" class="block">Groom Lebitso:</label>
-                        <input type="text" id="groomLebitso" name="groomLebitso" class="w-full p-2 border" required>
-                    </div>
-                    <div>
-                        <label for="groomLaKereke" class="block">Groom La Kereke (Optional):</label>
-                        <input type="text" id="groomLaKereke" name="groomLaKereke" class="w-full p-2 border">
-                    </div>
-                    <div>
-                        <label for="groomFane" class="block">Groom Fane:</label>
-                        <input type="text" id="groomFane" name="groomFane" class="w-full p-2 border" required>
-                    </div>
-                    <div>
-                        <label for="groomIdNumber" class="block">Groom ID Number:</label>
-                        <input type="text" id="groomIdNumber" name="groomIdNumber" class="w-full p-2 border">
-                    </div>
-                    <div>
-                        <label for="brideLebitso" class="block">Bride Lebitso:</label>
-                        <input type="text" id="brideLebitso" name="brideLebitso" class="w-full p-2 border" required>
-                    </div>
-                    <div>
-                        <label for="brideLaKereke" class="block">Bride La Kereke (Optional):</label>
-                        <input type="text" id="brideLaKereke" name="brideLaKereke" class="w-full p-2 border">
-                    </div>
-                    <div>
-                        <label for="brideFane" class="block">Bride Fane:</label>
-                        <input type="text" id="brideFane" name="brideFane" class="w-full p-2 border" required>
-                    </div>
-                    <div>
-                        <label for="brideIdNumber" class="block">Bride ID Number:</label>
-                        <input type="text" id="brideIdNumber" name="brideIdNumber" class="w-full p-2 border">
-                    </div>
-                    <div>
-                        <label for="weddingDate" class="block">Wedding Date:</label>
-                        <input type="date" id="weddingDate" name="weddingDate" class="w-full p-2 border" required>
-                    </div>
-                    <div>
-                        <label for="moruti" class="block">Moruti:</label>
-                        <input type="text" id="moruti" name="moruti" class="w-full p-2 border" required>
-                    </div>
-                    <div>
-                        <label for="location" class="block">Location:</label>
-                        <input type="text" id="location" name="location" class="w-full p-2 border" required>
-                    </div>
-                    <button type="submit" class="bg-blue-500 text-white p-2 rounded">Record</button>
-                </form>
+        <div class="menu-toggle" id="toggleSidebar"><i class="fas fa-bars"></i></div>
+        <div id="content" class="manyalo-section">
+            <h1>Manyalo (Weddings)</h1>
+            <div id="error"></div>
+            <h2>Record Wedding</h2>
+            <form id="weddingForm">
+				<div>
+					<label for="groom_first_name">Groom Lebitso:</label>
+					<input type="text" id="groom_first_name" name="groom_first_name" required>
+				</div>
+				<div>
+					<label for="groom_middle_name">Groom La Kereke (Optional):</label>
+					<input type="text" id="groom_middle_name" name="groom_middle_name">
+				</div>
+				<div>
+					<label for="groom_surname">Groom Fane:</label>
+					<input type="text" id="groom_surname" name="groom_surname" required>
+				</div>
+				<div>
+					<label for="groom_id_number">Groom ID Number:</label>
+					<input type="text" id="groom_id_number" name="groom_id_number">
+				</div>
+				<div>
+					<label for="bride_first_name">Bride Lebitso:</label>
+					<input type="text" id="bride_first_name" name="bride_first_name" required>
+				</div>
+				<div>
+					<label for="bride_middle_name">Bride La Kereke (Optional):</label>
+					<input type="text" id="bride_middle_name" name="bride_middle_name">
+				</div>
+				<div>
+					<label for="bride_surname">Bride Fane:</label>
+					<input type="text" id="bride_surname" name="bride_surname" required>
+				</div>
+				<div>
+					<label for="bride_id_number">Bride ID Number:</label>
+					<input type="text" id="bride_id_number" name="bride_id_number">
+				</div>
+				<div>
+					<label for="wedding_date">Wedding Date:</label>
+					<input type="date" id="wedding_date" name="wedding_date" required>
+				</div>
+				<div>
+					<label for="pastor">Moruti:</label>
+					<input type="text" id="pastor" name="pastor" required>
+				</div>
+				<div>
+					<label for="location">Location:</label>
+					<input type="text" id="location" name="location" required>
+				</div>
+				<button type="submit" class="action-button">Record</button>
+			</form>
+            <div class="search-container">
+                <input type="text" id="search" placeholder="Search weddings...">
             </div>
-
-            <!-- Search input for weddings -->
-            <div class="mb-4">
-                <input type="text" id="search" placeholder="Search weddings..." class="w-full p-2 border">
-            </div>
-
-            <h2 class="text-2xl font-bold mb-2">Wedding Records</h2>
-            <table class="w-full border-collapse border">
+            <h2>Wedding Records</h2>
+            <table>
                 <thead>
-                    <tr class="bg-gray-200">
-                        <th class="border p-2">Groom</th>
-                        <th class="border p-2">Bride</th>
-                        <th class="border p-2">Date</th>
-                        <th class="border p-2">Actions</th>
+                    <tr>
+                        <th>Groom</th>
+                        <th>Bride</th>
+                        <th>Date</th>
+                        <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody id="weddingList"></tbody>
             </table>
         </div>
     </div>
-
     <script src="manyalo.js"></script>
+	<script>
+    // Sidebar toggle functionality
+    document.addEventListener('DOMContentLoaded', function() {
+        const toggleButton = document.getElementById('toggleSidebar');
+        const sidebar = document.getElementById('sidebar');
+        const content = document.getElementById('content');
+        const menuClose = document.getElementById('menuClose');
+
+        if (toggleButton && sidebar && content) {
+            toggleButton.addEventListener('click', function() {
+                sidebar.classList.toggle('open');
+                content.classList.toggle('shift');
+            });
+        }
+
+        if (menuClose) {
+            menuClose.addEventListener('click', function() {
+                sidebar.classList.remove('open');
+                content.classList.remove('shift');
+            });
+        }
+    });
+</script>
 </body>
 </html>

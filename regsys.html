@@ -6,74 +6,103 @@
     <title>LECSA Registration System</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+	
 </head>
 <body>
-	<div class="header-wrapper" id="content">
-    <div class="side-menu" id="sidebar">
-        <div class="menu-logo">
-            <img src="images/logo.png" alt="LECSA Logo">
-            <span>LECSA Menu</span>
+    <div class="header-wrapper" id="content">
+        <div class="side-menu" id="sidebar">
+            <div class="menu-logo">
+                <img src="images/banner.png" alt="LECSA Logo">
+                <span>LECSA Menu</span>
+            </div>
+            <a href="index.html"><i class="fas fa-home"></i><span>Kabelo Register</span></a>
+            <a href="events.html"><i class="fas fa-cross"></i><span>Likolobetso</span></a>
+            <a href="archives.html"><i class="fas fa-ring"></i><span>Manyalo</span></a>
+            <a href="financials.html"><i class="fas fa-money-bill"></i><span>Financials</span></a>
+            <a href="archives.html"><i class="fas fa-archive"></i><span>Archives</span></a>
+            <a href="admin.html" id="adminLink" style="display: none;"><i class="fas fa-user-shield"></i><span>Admin</span></a>
+            <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
+            <div class="menu-close"><i class="fas fa-times"></i></div>
         </div>
-        <a href="index.html"><i class="fas fa-home"></i><span>Kabelo Register</span></a>
-        <a href="events.html"><i class="fas fa-cross"></i><span>Likolobetso</span></a>
-		<a href="archives.html"><i class="fas fa-ring"></i><span>Manyalo</span></a>
-		<a href="financials.html"><i class="fas fa-money-bill"></i><span>Financials</span></a>
-        <a href="archives.html"><i class="fas fa-archive"></i><span>Archives</span></a>
-        <a href="admin.html" id="adminLink" style="display: none;"><i class="fas fa-user-shield"></i><span>Admin</span></a>
-        <a href="#" id="logoutLink"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a>
-        <div class="menu-close"><i class="fas fa-times"></i></div>
-    </div>
 
-    <div class="menu-toggle" id="toggleSidebar"><i class="fas fa-bars"></i></div>
+        <div class="menu-toggle" id="toggleSidebar"><i class="fas fa-bars"></i></div>
 
-    
         <div class="header">
             <div class="regsys-section">
-                <h2>LECSA Registration System</h2>
+                <div class="regsys-header">
+                    <h2>LECSA Registration System</h2>
+                    <p class="subtitle">Welcome to the church management dashboard</p>
+                </div>
+                
                 <div class="recent-activities">
-                    <h3>Recent Activities</h3>
+                    <h3 class="section-title">Recent Activities</h3>
                     <div class="row">
                         <div class="activity-col">
+                            <div class="activity-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
                             <h4>Newest Member</h4>
                             <p id="recentMember">Loading...</p>
                         </div>
                         <div class="activity-col">
+                            <div class="activity-icon">
+                                <i class="fas fa-water"></i>
+                            </div>
                             <h4>Recent Baptism</h4>
                             <p id="recentBaptism">Loading...</p>
                         </div>
                         <div class="activity-col">
+                            <div class="activity-icon">
+                                <i class="fas fa-heart"></i>
+                            </div>
                             <h4>Recent Wedding</h4>
                             <p id="recentWedding">Loading...</p>
                         </div>
                     </div>
                 </div>
+                
                 <div class="management-options">
-                    <h3>Management Options</h3>
+                    <h3 class="section-title">Management Options</h3>
                     <div class="row">
                         <div class="management-col">
+                            <div class="management-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
                             <h4>Kabelo Register</h4>
                             <p>Manage church member registrations</p>
-                            <a href="kabelo.html" class="hero-btn">Kabelo</a>
+                            <a href="kabelo.html" class="hero-btn">Go to Kabelo</a>
                         </div>
                         <div class="management-col">
+                            <div class="management-icon">
+                                <i class="fas fa-tint"></i>
+                            </div>
                             <h4>Likolobetso</h4>
                             <p>Record baptism details</p>
-                            <a href="likolobetso.html" class="hero-btn">Likolobetso</a>
+                            <a href="likolobetso.html" class="hero-btn">Go to Likolobetso</a>
                         </div>
                         <div class="management-col">
+                            <div class="management-icon">
+                                <i class="fas fa-ring"></i>
+                            </div>
                             <h4>Manyalo</h4>
                             <p>Record wedding details</p>
-                            <a href="manyalo.html" class="hero-btn"> Manyalo</a>
+                            <a href="manyalo.html" class="hero-btn">Go to Manyalo</a>
                         </div>
-						<div class="management-col">
-                        <h3>Financials</h3>
-                        <p>Manage financial records</p>
-                        <a href="financials.html" class="hero-btn">Financials</a>
-						</div>
                         <div class="management-col">
+                            <div class="management-icon">
+                                <i class="fas fa-money-bill-wave"></i>
+                            </div>
+                            <h4>Financials</h4>
+                            <p>Manage financial records</p>
+                            <a href="financials.html" class="hero-btn">Go to Financials</a>
+                        </div>
+                        <div class="management-col">
+                            <div class="management-icon">
+                                <i class="fas fa-archive"></i>
+                            </div>
                             <h4>Archives</h4>
                             <p>View archived records</p>
-                            <a href="archives.html" class="hero-btn"> Archives</a>
+                            <a href="archives.html" class="hero-btn">Go to Archives</a>
                         </div>
                     </div>
                 </div>
